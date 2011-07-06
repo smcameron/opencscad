@@ -67,6 +67,8 @@ static char *v[] = {
 	NULL,
 };
 
+static char **STEVE[] = { s, t, e, v, e, NULL };
+
 static void renderchar(double x, double y, char *c[])
 {
 	int i;
@@ -97,24 +99,21 @@ static void renderchar(double x, double y, char *c[])
 	endxlate();
 	endonion();
 } 
-	
-static void steve(void)
-{
-	double x, y;
 
-	x = 0;
-	y = 0;
+static void renderstring(double x, double y, char **s[])
+{
+	int i;
 
 	onion();
-	renderchar(x, y, s); x += PIXELWIDTH * 8;
-	renderchar(x, y, t); x += PIXELWIDTH * 8;
-	renderchar(x, y, e); x += PIXELWIDTH * 8;
-	renderchar(x, y, v); x += PIXELWIDTH * 8;
-	renderchar(x, y, e); x += PIXELWIDTH * 8;
+		for (i = 0; s[i] != NULL; i++) {
+			renderchar(x, y, s[i]);
+			x += PIXELWIDTH * 8;
+		}
 	endonion();
 }
 
 int main(int argc, char *argv[])
 {
-	steve();
+	renderstring(0, 0, STEVE);
+	return 0;
 }

@@ -90,3 +90,44 @@ void endrotate(void)
 }
 
 
+void square(double x, double y, int center)
+{
+	printf("square(size = [%g, %G], center = %s);\n",
+		x, y, center ? "true" : "false");
+}
+
+void circle(double r)
+{
+	printf("circle(r = %g);\n", r);
+}
+
+void polygon(struct opencscad_2dpoint point[], int npoints,
+			int *path[])
+{
+	int i, j;
+
+	printf("polygon(points = [");
+	for (i = 0; i < npoints; i++) {
+		printf("[%g, %g]", point[i].x, point[i].y);
+		if (i != npoints-1)
+			printf(",");
+	}
+	printf("],\n");
+
+	printf("paths = [");
+	for (i = 0; path[i]; i++) {
+		printf("[");
+		for (j = 0; path[i][j] != -1; j++) {
+			printf("%d", path[i][j]);
+			if (path[i][j+1] != -1)
+				printf(", ");
+		}
+		printf("]");
+
+		if (!path[i+1])
+			printf(",");
+		printf("\n");
+	} 
+	printf("]);\n");
+}
+

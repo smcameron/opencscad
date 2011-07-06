@@ -26,6 +26,10 @@
 #define OPENCSCAD_GLOBAL
 #endif
 
+struct opencscad_2dpoint {
+	double x, y;
+};
+
 OPENCSCAD_GLOBAL void cube(double x, double y, double z, int center) ;
 OPENCSCAD_GLOBAL void sphere(double r);
 OPENCSCAD_GLOBAL void cylinder(double h, double r1, double r2);
@@ -39,6 +43,19 @@ OPENCSCAD_GLOBAL void scale(double x, double y, double z);
 OPENCSCAD_GLOBAL void endscale(void);
 OPENCSCAD_GLOBAL void rotate(double angle, double x, double y, double z);
 OPENCSCAD_GLOBAL void endrotate(void);
+
+/* 2d primitives */
+OPENCSCAD_GLOBAL void square(double x, double y, int center);
+OPENCSCAD_GLOBAL void circle(double r);
+
+
+/* path is an array of pointers to arrays of ints.  The ints are
+ * indexes into the point array.  The lists of ints are terminted by
+ * the value -1. 
+ */
+OPENCSCAD_GLOBAL void polygon(struct opencscad_2dpoint point[], int npoints,
+			int *path[]);
+
 
 #undef OPENCSCAD_GLOBAL
 #endif

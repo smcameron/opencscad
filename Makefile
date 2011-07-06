@@ -1,5 +1,5 @@
 
-all:	test1 test2 test3 test4 test5
+all:	test1 test2 test3 test4 test5 test6
 	
 opencscad.o:	opencscad.h opencscad.c
 	gcc -W -Wall -c opencscad.c
@@ -19,8 +19,12 @@ test4:	test4.c opencscad.o
 test5:	test5.c opencscad.o
 	gcc -g -o test5 -lm opencscad.o test5.c
 
+test6:	test6.c opencscad.o
+	gcc -g -o test6 -lm opencscad.o test6.c
+
+
 clean:
-	rm -fr opencscad.o test1 test2 test3 test4 test5
+	rm -fr opencscad.o test1 test2 test3 test4 test5 test6
 
 
 

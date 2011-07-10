@@ -24,50 +24,61 @@
 #define PIXELHEIGHT 8 /* mm */
 
 static char *s[] = {
-	".#####.",
-	"#.....#",
-	"#......",
-	".#####.",
-	"......#",
-	"#.....#",
-	".#####.",
+	".#####..",
+	"#.....#.",
+	"#.......",
+	".#####..",
+	"......#.",
+	"#.....#.",
+	".#####..",
 	NULL,
 };
 
 static char *t[] = {
-	"#######",
-	"...#...",
-	"...#...",
-	"...#...",
-	"...#...",
-	"...#...",
-	"...#...",
+	"#######.",
+	"...#....",
+	"...#....",
+	"...#....",
+	"...#....",
+	"...#....",
+	"...#....",
 	NULL,
 };
 
 static char *e[] = {
-	"#######",
-	"#......",
-	"#......",
-	"#####..",
-	"#......",
-	"#......",
-	"#######",
+	"#######.",
+	"#.......",
+	"#.......",
+	"#####...",
+	"#.......",
+	"#.......",
+	"#######.",
 	NULL,
 };
 
 static char *v[] = {
-	"#.....#",
-	"#.....#",
-	"#.....#",
-	".#...#.",
-	".#...#.",
-	"..#.#..",
-	"...#...",
+	"#.....#.",
+	"#.....#.",
+	"#.....#.",
+	".#...#..",
+	".#...#..",
+	"..#.#...",
+	"...#....",
 	NULL,
 };
 
-static char **STEVE[] = { s, t, e, v, e, NULL };
+static char *kern[] = {
+	".",
+	".",
+	".",
+	".",
+	".",
+	".",
+	".",
+	NULL,
+};
+
+static char **STEVE[] = { kern, s, t, e, v, e, NULL };
 
 static void renderchar(double x, double y, char *c[])
 {
@@ -87,7 +98,7 @@ static void renderchar(double x, double y, char *c[])
 		for (p = c[i]; *p; p++) {
 			xlate(px, py - (PIXELHEIGHT - 1), 0);
 				xlate(0, -PIXELHEIGHT / 2.0 + 1, 0);
-					square(PIXELWIDTH * 2, 1, 1);
+					square(PIXELWIDTH * 0.70, 1, 1);
 				endxlate();
 				if (*p == '#')
 					square(PIXELWIDTH - 2, PIXELHEIGHT - 2, 1);
@@ -105,7 +116,9 @@ static void renderstring(double x, double y, char **s[])
 	int i;
 
 	onion();
-		for (i = 0; s[i] != NULL; i++) {
+		renderchar(x, y, s[0]);
+		x += PIXELWIDTH;
+		for (i = 1; s[i] != NULL; i++) {
 			renderchar(x, y, s[i]);
 			x += PIXELWIDTH * 8;
 		}

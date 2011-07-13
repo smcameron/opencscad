@@ -1,5 +1,5 @@
 
-all:	test1 test2 test3 test4 test5 test6 pentafort
+all:	test1 test2 test3 test4 test5 test6 pentafort tree
 	
 opencscad.o:	opencscad.h opencscad.c
 	gcc -W -Wall -c opencscad.c
@@ -25,9 +25,12 @@ test6:	test6.c opencscad.o
 pentafort:	pentafort.c opencscad.o
 	gcc -g -o pentafort -lm opencscad.o pentafort.c
 
+tree:	tree.c opencscad.o
+	gcc -g -o tree -lm opencscad.o tree.c
+
 
 clean:
-	rm -fr opencscad.o test1 test2 test3 test4 test5 test6 pentafort
+	rm -fr opencscad.o test1 test2 test3 test4 test5 test6 pentafort tree
 
 
 

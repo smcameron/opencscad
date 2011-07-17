@@ -67,6 +67,17 @@ static char *v[] = {
 	NULL,
 };
 
+static char *underscore[] = {
+	"........",
+	"........",
+	"........",
+	"........",
+	"........",
+	"........",
+	"#######.",
+	NULL,
+};
+
 static char *kern[] = {
 	".",
 	".",
@@ -78,7 +89,7 @@ static char *kern[] = {
 	NULL,
 };
 
-static char **STEVE[] = { kern, s, t, e, v, e, NULL };
+static char **STEVE[] = { kern, s, t, e, v, e, underscore, NULL };
 
 static void renderchar(double x, double y, char *c[])
 {

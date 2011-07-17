@@ -147,7 +147,7 @@ static void renderchar(double x, double y, char *c[])
 		for (p = c[i]; *p; p++) {
 			xlate(px, py - (PIXELHEIGHT - 1), 0);
 				xlate(0, -PIXELHEIGHT / 2.0 + 1, 0);
-					square(PIXELWIDTH * 0.70, 1, 1);
+					square(PIXELWIDTH * 0.35, 1, 1);
 				endxlate();
 				if (*p == '#')
 					square(PIXELWIDTH - 2, PIXELHEIGHT - 2, 1);

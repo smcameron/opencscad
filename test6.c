@@ -20,8 +20,8 @@
 
 #include "opencscad.h"
 
-#define PIXELWIDTH 6 /* mm */
-#define PIXELHEIGHT 8 /* mm */
+#define PIXELWIDTH 2.15 /* mm */
+#define PIXELHEIGHT 5 /* mm */
 
 static char *invader1[] = {
 	"........",
@@ -145,12 +145,12 @@ static void renderchar(double x, double y, char *c[])
 	for (i = 0; c[i] != NULL; i++) {
 		px = 0;
 		for (p = c[i]; *p; p++) {
-			xlate(px, py - (PIXELHEIGHT - 1), 0);
+			xlate(px, py - (PIXELHEIGHT), 0);
 				xlate(0, -PIXELHEIGHT / 2.0 + 1, 0);
-					square(PIXELWIDTH * 0.35, 1, 1);
+					square(PIXELWIDTH * 0.25, 1, 1);
 				endxlate();
 				if (*p == '#')
-					square(PIXELWIDTH - 2, PIXELHEIGHT - 2, 1);
+					square(PIXELWIDTH * 0.5, PIXELHEIGHT * 0.6, 1);
 			endxlate();
 			px += PIXELWIDTH;
 		}
@@ -176,6 +176,14 @@ static void renderstring(double x, double y, char **s[])
 
 int main(int argc, char *argv[])
 {
+	xlate(0, 2.5 * PIXELHEIGHT, 0);
 	renderstring(0, 0, STEVE);
+	endxlate();
+#if 0
+	cube(1.4, 25.4, 25.4, 0);
+	xlate(5.5 * 25.4, 0, 0);
+		cube(1, 25.4, 25.4, 0);
+	endxlate();
+#endif
 	return 0;
 }

@@ -7,6 +7,9 @@ opencscad.o:	opencscad.h opencscad.c
 test1:	test1.c opencscad.o
 	gcc -o test1 opencscad.o test1.c
 
+castle:	castle.c opencscad.o
+	gcc -o castle opencscad.o castle.c -lm
+
 test2:	test2.c opencscad.o
 	gcc -o test2 opencscad.o test2.c
 

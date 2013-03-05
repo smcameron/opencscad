@@ -24,19 +24,44 @@
 #include "opencscad.h"
 #undef DEFINE_OPENCSCAD_GLOBALS
 
+void fixup(double *x)
+{
+	if (fabsl(*x) < 0.0000001)
+		*x = 0.0;
+}
+
 void cube(double x, double y, double z, int center)
 {
+	fixup(&x);
+	fixup(&y);
+	fixup(&z);
 	printf("cube(size = [%g, %g, %g], center = %s);\n",
 		x, y, z, center ? "true" : "false");
 }
 
 void sphere(double r)
 {
+	fixup(&r);
 	printf("sphere(r = %g);\n", r);
+}
+
+void angular_cylinder(double h, double r1, double r2, double fa)
+{
+	fixup(&h);
+	fixup(&r1);
+	fixup(&r2);
+	if (fa >= 90.0) {
+		printf("cylinder(h = %g, r1 = %g, r2 = %g, $fn = 4);\n", h, r1, r2);
+	} else {
+		printf("cylinder(h = %g, r1 = %g, r2 = %g, $fa = %g);\n", h, r1, r2, fa);
+	}
 }
 
 void cylinder(double h, double r1, double r2)
 {
+	fixup(&h);
+	fixup(&r1);
+	fixup(&r2);
 	printf("cylinder(h = %g, r1 = %g, r2 = %g);\n", h, r1, r2);
 }
 
@@ -61,6 +86,9 @@ void enddiff(void)
 }
 void xlate(double x, double y, double z)
 {
+	fixup(&x);
+	fixup(&y);
+	fixup(&z);
 	printf("translate(v = [%g, %g, %g]) {\n", x, y, z);
 }
 
@@ -71,6 +99,9 @@ void endxlate(void)
 
 void scale(double x, double y, double z)
 {
+	fixup(&x);
+	fixup(&y);
+	fixup(&z);
 	printf("scale(v = [%g, %g, %g]) {\n", x, y, z);
 }
 
@@ -81,6 +112,10 @@ void endscale(void)
 
 void rotate(double angle, double x, double y, double z)
 {
+	fixup(&angle);
+	fixup(&x);
+	fixup(&y);
+	fixup(&z);
 	printf("rotate(a = %g, v = [%g, %g, %g]) {\n", angle, x, y, z);
 }
 
@@ -92,12 +127,15 @@ void endrotate(void)
 
 void square(double x, double y, int center)
 {
+	fixup(&x);
+	fixup(&y);
 	printf("square(size = [%g, %G], center = %s);\n",
 		x, y, center ? "true" : "false");
 }
 
 void circle(double r)
 {
+	fixup(&r);
 	printf("circle(r = %g);\n", r);
 }
 

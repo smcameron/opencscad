@@ -33,6 +33,7 @@ struct opencscad_2dpoint {
 OPENCSCAD_GLOBAL void cube(double x, double y, double z, int center) ;
 OPENCSCAD_GLOBAL void sphere(double r);
 OPENCSCAD_GLOBAL void cylinder(double h, double r1, double r2);
+OPENCSCAD_GLOBAL void angular_cylinder(double h, double r1, double r2, double fa);
 OPENCSCAD_GLOBAL void onion(void); /* union is reserved word in c. */
 OPENCSCAD_GLOBAL void endonion(void);
 OPENCSCAD_GLOBAL void diff(void);

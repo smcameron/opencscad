@@ -33,6 +33,20 @@ static double perturbup(double value, double amount)
 	return value;
 }
 
+static void arched_opening(double height, double width, double depth)
+{
+	xlate(-width / 2.0, -depth / 2.0, -height / 2.0);
+	onion();
+	cube(width, depth, height - width / 2.0, 0);
+	xlate(width / 2.0, depth, height - width / 2.0);
+	rotate(90, 1, 0, 0);
+	cylinder(depth, width / 2.0, width / 2.0); 
+	endrotate();
+	endxlate();
+	endonion();
+	endxlate();
+}
+
 void crenelation(double h, double r)
 {
 	onion();
@@ -49,6 +63,25 @@ void crenelation(double h, double r)
 	endonion();
 }
 
+static void add_windows(double tower_radius, double tower_height)
+{
+	int i, nwindows;
+	double h;
+	double angle;
+
+	nwindows = irandomn(3);
+
+	for (i = 0; i < nwindows; i++) {
+		h = randomn(tower_height / 4.0) + tower_height * 0.5;
+		angle = (double) randomn(360.0);
+		xlate(0, 0, h);
+		rotate(angle, 0, 0, 1);
+		arched_opening(5, 2, tower_radius * 3);	
+		endrotate();
+		endxlate();
+	}
+}
+
 static void angular_tower(double x, double y, double r, double h, int flying, double fa)
 {
 	xlate(x, y, 0);
@@ -57,6 +90,9 @@ static void angular_tower(double x, double y, double r, double h, int flying, do
 	if (r > h * 0.20)
 		flying = 0;
 
+	if (!flying)
+		diff();
+	onion();
 	if (flying) {
 		angular_cylinder(h * 0.75, r * 0.15, 0.15 * r, fa);
 		xlate(0, 0, h * 0.50);
@@ -84,6 +120,11 @@ static void angular_tower(double x, double y, double r, double h, int flying, do
 	enddiff();
 	endxlate();
 	endxlate();
+	endonion();
+	if (!flying) {
+		add_windows(r, h);
+		enddiff();
+	}
 	endxlate();
 }
 
@@ -105,6 +146,10 @@ static void pointy_tower(double x, double y, double r, double h, int flying, dou
 	extra_pointy = (r < h * 0.30 && irandomn(100) < 40);
 	xlate(x, y, 0);
 	/* xlate(0, 0, h * 0.8); */
+
+	if (!flying)
+		diff();
+	onion();
 	if (flying) {
 		angular_cylinder(h * 0.75, 0.15 * r, 0.15 * r, fa);
 		xlate(0, 0, h * 0.5);
@@ -129,6 +174,11 @@ static void pointy_tower(double x, double y, double r, double h, int flying, dou
 	endxlate();
 	endxlate();
 	endxlate();
+	endonion();
+	if (!flying) {
+		add_windows(r, h);
+		enddiff();
+	}
 	endxlate();
 }
 

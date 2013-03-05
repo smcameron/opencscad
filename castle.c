@@ -48,19 +48,37 @@ void crenelation(double h, double r)
 	endonion();
 }
 
-static void angular_tower(double x, double y, double r, double h, double fa)
+static void angular_tower(double x, double y, double r, double h, int flying, double fa)
 {
 	xlate(x, y, 0);
-	angular_cylinder(h, r, 0.80 * r, fa);
-	/* xlate(0, 0, h * 0.8); */
-	xlate(0, 0, h - 0.6 * r);
-	angular_cylinder(0.6 * r, 0.81 * r, r * 1.2, fa);
-	xlate(0, 0, r * 0.6);
-	diff();
-	angular_cylinder(0.6 * r, 1.2 * r, r * 1.2, fa);
-	angular_cylinder(0.75 * r, 1.0 * r, r * 1.0, fa);
-	xlate(0, 0, 0.5 * r);
-	crenelation(2.3 * r, r * 2.0);
+
+	/* prevent > 45 degree overhangs to maintain 3d-printability */
+	if (r > h * 0.20)
+		flying = 0;
+
+	if (flying) {
+		angular_cylinder(h * 0.75, r * 0.15, 0.15 * r, fa);
+		xlate(0, 0, h * 0.50);
+		angular_cylinder(h * 0.25, 0.10 * r, r * 1.2, fa);
+		xlate(0, 0, h * 0.25);
+		diff();
+		angular_cylinder(1.6 * r, 1.2 * r, r * 1.2, fa);
+		xlate(0, 0, 0.80 * r);
+		angular_cylinder(1.00 * r, 1.0 * r, r * 1.0, fa);
+		xlate(0, 0, 0.7 * r);
+		crenelation(2.3 * r, r * 2.0);
+		endxlate();
+	} else {
+		angular_cylinder(h, r, 0.80 * r, fa);
+		xlate(0, 0, h - 0.6 * r);
+		angular_cylinder(0.6 * r, 0.81 * r, r * 1.2, fa);
+		xlate(0, 0, r * 0.6);
+		diff();
+		angular_cylinder(0.6 * r, 1.2 * r, r * 1.2, fa);
+		angular_cylinder(0.75 * r, 1.0 * r, r * 1.0, fa);
+		xlate(0, 0, 0.5 * r);
+		crenelation(2.3 * r, r * 2.0);
+	}
 	endxlate();
 	enddiff();
 	endxlate();
@@ -68,25 +86,39 @@ static void angular_tower(double x, double y, double r, double h, double fa)
 	endxlate();
 }
 
-static void round_tower(double x, double y, double r, double h)
+static void round_tower(double x, double y, double r, double h, int flying)
 {
-	angular_tower(x, y, r, h, 5.0);
+	angular_tower(x, y, r, h, flying, 5.0);
 }
 
-static void pointy_tower(double x, double y, double r, double h, double fa)
+static void pointy_tower(double x, double y, double r, double h, int flying, double fa)
 {
 	double pointiness;
 	pointiness = perturbup(1.4, 0.5);
 
+	/* prevent > 45 degree overhangs to maintain 3d-printability */
+	if (r > h * 0.20)
+		flying = 0;
+
 	xlate(x, y, 0);
-	angular_cylinder(h, r, 0.80 * r, fa);
 	/* xlate(0, 0, h * 0.8); */
-	xlate(0, 0, h - 0.6 * r);
-	angular_cylinder(0.6 * r, 0.81 * r, r * 1.2, fa);
-	xlate(0, 0, r * 0.6);
-	angular_cylinder(0.6 * r, 1.2 * r, r * 1.2, fa);
-	xlate(0, 0, r * 0.6);
-	angular_cylinder(pointiness * r, 1.2 * r, 0, fa);
+	if (flying) {
+		angular_cylinder(h * 0.75, 0.15 * r, 0.15 * r, fa);
+		xlate(0, 0, h * 0.5);
+		angular_cylinder(h * 0.25, 0.10 * r, r * 1.2, fa);
+		xlate(0, 0, h * 0.25);
+		angular_cylinder(1.6 * r, 1.2 * r, r * 1.2, fa);
+		xlate(0, 0, r * 1.6);
+		angular_cylinder(pointiness * r, 1.2 * r, 0, fa);
+	} else {
+		angular_cylinder(h, r, 0.80 * r, fa);
+		xlate(0, 0, h - 0.6 * r);
+		angular_cylinder(0.6 * r, 0.81 * r, r * 1.2, fa);
+		xlate(0, 0, r * 0.6);
+		angular_cylinder(0.6 * r, 1.2 * r, r * 1.2, fa);
+		xlate(0, 0, r * 0.6);
+		angular_cylinder(pointiness * r, 1.2 * r, 0, fa);
+	}
 	endxlate();
 	endxlate();
 	endxlate();
@@ -97,33 +129,34 @@ static void tower(double x, double y, double r, double h)
 {
 	double origh = h;
 	double origr = r;
+	int flying = (irandomn(100) < 30);
 	h = perturbup(h, TOWER_HEIGHT_RANDOMNESS);
 	r = perturb(r, TOWER_RADIUS_RANDOMNESS);
 	switch (irandomn(20)) {
-	case 0: angular_tower(x, y, origr, origh, 90.0);
+	case 0: angular_tower(x, y, origr, origh, flying, 90.0);
 		break;
-	case 1:	angular_tower(x, y, r, h, 90.0);
+	case 1:	angular_tower(x, y, r, h, flying, 90.0);
 		break;
-	case 2: pointy_tower(x, y, r, h, 5.0);
+	case 2: pointy_tower(x, y, r, h, flying, 5.0);
 		break;
-	case 3: angular_tower(x, y, r, h, 72.0);
+	case 3: angular_tower(x, y, r, h, flying, 72.0);
 		break;
-	case 4: angular_tower(x, y, r, h, 90.0);
+	case 4: angular_tower(x, y, r, h, flying, 90.0);
 		break;
-	case 5: angular_tower(x, y, r, h, 60.0);
+	case 5: angular_tower(x, y, r, h, flying, 60.0);
 		break;
-	case 6: angular_tower(x, y, r, h, 45.0);
+	case 6: angular_tower(x, y, r, h, flying, 45.0);
 		break;
-	case 7: pointy_tower(x, y, r, h, 72.0);
+	case 7: pointy_tower(x, y, r, h, flying, 72.0);
 		break;
-	case 8: pointy_tower(x, y, r, h, 90.0);
+	case 8: pointy_tower(x, y, r, h, flying, 90.0);
 		break;
-	case 9: pointy_tower(x, y, r, h, 60.0);
+	case 9: pointy_tower(x, y, r, h, flying, 60.0);
 		break;
-	case 10: pointy_tower(x, y, r, h, 45.0);
+	case 10: pointy_tower(x, y, r, h, flying, 45.0);
 		break;
 	default:
-		round_tower(x, y, r,h);
+		round_tower(x, y, r, h, flying );
 		break;
 	}
 }

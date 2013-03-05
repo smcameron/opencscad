@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 #include "opencscad.h"
 
@@ -218,7 +219,10 @@ static void enclosure(int npoints, double r, double height)
 
 int main(int argc, char *argv[])
 {
-	srand(8132);
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+	srand(tv.tv_usec);
 	enclosure(8, 70.0, 90.0 * HEIGHT_RADIUS);
 	enclosure(6, 38.0, 140.0 * HEIGHT_RADIUS);
 	enclosure(4, 25.0, 180.0 * HEIGHT_RADIUS);

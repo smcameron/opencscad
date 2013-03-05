@@ -96,11 +96,13 @@ static void pointy_tower(double x, double y, double r, double h, int flying, dou
 {
 	double pointiness;
 	pointiness = perturbup(1.4, 0.5);
+	int extra_pointy;
 
 	/* prevent > 45 degree overhangs to maintain 3d-printability */
 	if (r > h * 0.20)
 		flying = 0;
 
+	extra_pointy = (r < h * 0.30 && irandomn(100) < 40);
 	xlate(x, y, 0);
 	/* xlate(0, 0, h * 0.8); */
 	if (flying) {
@@ -111,6 +113,8 @@ static void pointy_tower(double x, double y, double r, double h, int flying, dou
 		angular_cylinder(1.6 * r, 1.2 * r, r * 1.2, fa);
 		xlate(0, 0, r * 1.6);
 		angular_cylinder(pointiness * r, 1.2 * r, 0, fa);
+		if (extra_pointy)
+			angular_cylinder(pointiness * 2 * r, 0.6 * r, 0, fa);
 	} else {
 		angular_cylinder(h, r, 0.80 * r, fa);
 		xlate(0, 0, h - 0.6 * r);
@@ -119,6 +123,8 @@ static void pointy_tower(double x, double y, double r, double h, int flying, dou
 		angular_cylinder(0.6 * r, 1.2 * r, r * 1.2, fa);
 		xlate(0, 0, r * 0.6);
 		angular_cylinder(pointiness * r, 1.2 * r, 0, fa);
+		if (extra_pointy)
+			angular_cylinder(pointiness * 2 * r, 0.6 * r, 0, fa);
 	}
 	endxlate();
 	endxlate();

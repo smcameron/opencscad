@@ -284,6 +284,38 @@ static void enclosure(int npoints, double r, double height)
 	tower(x1, y1, thickness * 2.0, height * 1.25);
 }
 
+void gothic_arch(double width, double height, double depth)
+{
+	double radius;
+	double archheight;
+	double cubeheight;
+
+	radius = 5.0 * width / 4.0; 
+	archheight = width;
+	cubeheight = height - archheight;
+
+	xlate(-depth / 2.0, 0, cubeheight);
+	onion();
+	intersection();
+	xlate(0, 3.0 * width / 4.0, 0);
+	rotate(90, 0, 1, 0);
+	cylinder(depth, radius, radius);
+	endrotate();
+	endxlate();
+	xlate(0, -3.0 * width / 4.0, 0);
+	rotate(90, 0, 1, 0);
+	cylinder(depth, radius, radius);
+	endrotate();
+	endxlate();
+	endintersection();
+
+	xlate(depth / 2.0, 0, -cubeheight / 2.0);
+	cube(depth, width, cubeheight, 1);
+	endxlate();
+	endonion();
+	endxlate();
+}
+
 int main(int argc, char *argv[])
 {
 	struct timeval tv;

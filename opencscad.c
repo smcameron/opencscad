@@ -84,6 +84,17 @@ void enddiff(void)
 {
 	printf("}\n");
 }
+
+void intersection(void) 
+{
+	printf("intersection() {\n");
+}
+
+void endintersection(void)
+{
+	printf("}\n");
+}
+
 void xlate(double x, double y, double z)
 {
 	fixup(&x);

@@ -38,6 +38,8 @@ OPENCSCAD_GLOBAL void onion(void); /* union is reserved word in c. */
 OPENCSCAD_GLOBAL void endonion(void);
 OPENCSCAD_GLOBAL void diff(void);
 OPENCSCAD_GLOBAL void enddiff(void);
+OPENCSCAD_GLOBAL void intersection(void);
+OPENCSCAD_GLOBAL void endintersection(void);
 OPENCSCAD_GLOBAL void xlate(double x, double y, double z);
 OPENCSCAD_GLOBAL void endxlate(void);
 OPENCSCAD_GLOBAL void scale(double x, double y, double z);

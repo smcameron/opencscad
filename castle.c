@@ -361,6 +361,25 @@ static void gothic_hall(double length, double width, double height,
 	enddiff();
 }
 
+static void gabled_roof(double length, double width, double height)
+{
+	double side;
+
+	side = (height * 2.0) / sqrt(2.0);
+
+	scale(width / (height * 2.0), 1.0, 1.0);
+	diff();
+	rotate(45, 0, 1, 0);
+	cube(side, length, side, 1);
+	endrotate();
+	xlate(0, 0, -side);  
+	cube(side * 2, length * 2, side * 2, 1);
+	endxlate();
+	enddiff();
+	endscale();
+}
+
+
 int main(int argc, char *argv[])
 {
 	struct timeval tv;

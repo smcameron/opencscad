@@ -337,6 +337,17 @@ static void gothic_arch_array(double length, double width, double height,
 	}
 }
 
+static void gothic_matrix(double length, double width, double height,
+		int larches, int warches, double border_thickness)
+{
+	onion();
+	gothic_arch_array(length, width, height, border_thickness, larches);
+	rotate(90, 0, 0, 1);
+	gothic_arch_array(width, length, height, border_thickness, warches);
+	endrotate();
+	endonion();
+}
+
 int main(int argc, char *argv[])
 {
 	struct timeval tv;

@@ -379,6 +379,54 @@ static void gabled_roof(double length, double width, double height)
 	endscale();
 }
 
+static void english_house_end(double width, double wall_height, double wall_thickness,
+			double peak_height, double chimney_height)
+{
+	rotate(90, 0, 0, 1);
+	onion();
+	xlate(0, 0, wall_height / 2.0);
+	cube(width, wall_thickness, wall_height, 1);
+	endxlate();
+
+	xlate(0, 0, wall_height * 0.999);
+	gabled_roof(wall_thickness, width, peak_height);
+	endxlate();
+
+	xlate(0, 0, (wall_height + chimney_height) / 2.0);
+	cube(width * 0.20, wall_thickness, wall_height + chimney_height, 1);
+	endxlate();
+	endonion();
+	endrotate();
+}
+
+static void english_house(double width, double length, double height, double peak)
+{
+	double wall_thickness = width * 0.1;
+
+	if (wall_thickness < 5.0)
+		wall_thickness = 5.0;
+
+	diff();
+	onion();
+	gothic_hall(length * 1.05, width, height, 0, 1, wall_thickness);
+	xlate(-length / 2.05, 0, 0);
+	english_house_end(width, height * 1.3, wall_thickness, peak, peak * 1.2); 
+	endxlate();
+	xlate(length / 2.05, 0, 0);
+	english_house_end(width, height * 1.3, wall_thickness, peak, peak * 1.2); 
+	endxlate();
+
+	xlate(0, 0, height * 1.20);
+	rotate(90, 0, 0, 1);
+	gabled_roof(length, width, peak);
+	endrotate();
+	endxlate();
+	endonion();
+	xlate(0, 0, height * 0.5);
+	gothic_arch_array(length, width * 2, height * 0.60 , length * 0.1, 4);
+	endxlate();
+	enddiff();
+}
 
 int main(int argc, char *argv[])
 {

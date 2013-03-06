@@ -316,6 +316,27 @@ void gothic_arch(double width, double height, double depth)
 	endxlate();
 }
 
+static void gothic_arch_array(double length, double width, double height,
+				double border_thickness, int narches)
+{
+	int i;
+	double l = length - border_thickness * 2.0;
+	double wspan = (l + border_thickness) / narches;
+	double wwidth = wspan - border_thickness;
+	double x;
+
+	x = -(length / 2.0) + border_thickness + (wwidth / 2.0);
+
+	for (i = 0; i < narches; i++) {
+		xlate(x, 0, 0);
+		rotate(90, 0, 0, 1);
+		gothic_arch(wwidth, height, width);
+		endrotate();
+		endxlate();
+		x += wspan;
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	struct timeval tv;

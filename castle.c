@@ -49,18 +49,24 @@ static void arched_opening(double height, double width, double depth)
 
 void crenelation(double h, double r)
 {
+	rotate(360.0 / 16.0, 0, 0, 1);
 	onion();
-		cube(r * 0.15, r * 3.0, h * 0.12, 1);
+		//cube(r * 0.15, r * 3.0, h * 0.12, 1);
+		arched_opening(h * 0.35, r * 0.15, r * 3.0);
 		rotate(90.0, 0.0, 0.0, 1.0);
-			cube(r * 0.15, r * 3.0, h * 0.12, 1);
+			//cube(r * 0.15, r * 3.0, h * 0.12, 1);
+			arched_opening(h * 0.35, r * 0.15, r * 3.0);
 		endrotate();
 		rotate(45.0, 0.0, 0.0, 1.0);
-			cube(r * 0.15, r * 3.0, h * 0.12, 1);
+			//cube(r * 0.15, r * 3.0, h * 0.12, 1);
+			arched_opening(h * 0.35, r * 0.15, r * 3.0);
 		endrotate();
 		rotate((45.0 + 90.0), 0.0, 0.0, 1.0);
-			cube(r * 0.15, r * 3.0, h * 0.12, 1);
+			//cube(r * 0.15, r * 3.0, h * 0.12, 1);
+			arched_opening(h * 0.35, r * 0.15, r * 3.0);
 		endrotate();
 	endonion();
+	endrotate();
 }
 
 static void add_windows(double tower_radius, double tower_height)
@@ -113,7 +119,7 @@ static void angular_tower(double x, double y, double r, double h, int flying, do
 		diff();
 		angular_cylinder(0.6 * r, 1.2 * r, r * 1.2, fa);
 		angular_cylinder(0.75 * r, 1.0 * r, r * 1.0, fa);
-		xlate(0, 0, 0.5 * r);
+		xlate(0, 0, 0.7 * r);
 		crenelation(2.3 * r, r * 2.0);
 	}
 	endxlate();
@@ -147,8 +153,7 @@ static void pointy_tower(double x, double y, double r, double h, int flying, dou
 	xlate(x, y, 0);
 	/* xlate(0, 0, h * 0.8); */
 
-	if (!flying)
-		diff();
+	diff();
 	onion();
 	if (flying) {
 		angular_cylinder(h * 0.75, 0.15 * r, 0.15 * r, fa);
@@ -177,8 +182,14 @@ static void pointy_tower(double x, double y, double r, double h, int flying, dou
 	endonion();
 	if (!flying) {
 		add_windows(r, h);
-		enddiff();
 	}
+	if (!flying)
+		xlate(0, 0, h + 3);
+	else
+		xlate(0, 0, h * 0.85);
+	crenelation(r * 1.2, r * 2);
+	endxlate();
+	enddiff();
 	endxlate();
 }
 

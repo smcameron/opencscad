@@ -348,6 +348,19 @@ static void gothic_matrix(double length, double width, double height,
 	endonion();
 }
 
+static void gothic_hall(double length, double width, double height,
+	int larches, int warches, double border_thickness)
+{
+	diff();
+	xlate(0, 0, (height * 1.05) / 2.0 + border_thickness);
+	cube(length * 0.97, width * 0.97, height * 1.05 + border_thickness * 2.0, 1);
+	endxlate();
+	xlate(0, 0, 1.5 * border_thickness);
+	gothic_matrix(length, width, height, larches, warches, border_thickness);
+	endxlate();
+	enddiff();
+}
+
 int main(int argc, char *argv[])
 {
 	struct timeval tv;

@@ -399,6 +399,7 @@ static void english_house_end(double width, double wall_height, double wall_thic
 	endrotate();
 }
 
+/* width is y axis, length is x axis */
 static void english_house(double width, double length, double height, double peak)
 {
 	double wall_thickness = width * 0.1;
@@ -426,6 +427,67 @@ static void english_house(double width, double length, double height, double pea
 	gothic_arch_array(length, width * 2, height * 0.60 , length * 0.1, 4);
 	endxlate();
 	enddiff();
+}
+
+static void buttress(double width, double length, double height , double angle)
+{
+	xlate(0, 0, height / 2.0);
+	intersection();
+	cube(length * 2, width * 2, height, 1);
+	rotate(angle, 0, 1, 0);
+	cube(length, width, height * 2, 1);
+	endrotate();
+	endintersection();
+	endxlate();
+}
+
+static void buttress_array(double width, double length, double height, double angle,
+				double spacing, int count)
+{
+	int i;
+	double x;
+
+	x = -(spacing / 2.0) * (count - 1);
+
+	for (i = 0; i < count; i++) {
+		xlate(x, 0, 0);
+		rotate(90, 0, 0, 1);
+		buttress(width, length, height, angle);
+		endrotate();
+		x += spacing;
+		endxlate();
+	}
+}
+
+static void buttress_array_pair(double width, double length, double height, double angle,
+				double spacing, int count, double span_between_arrays)
+{
+	xlate(0, -span_between_arrays / 2.0, 0);
+	buttress_array(width, length, height, angle, spacing, count);
+	endxlate();
+	rotate(180, 0, 0, 1);
+	xlate(0, -span_between_arrays / 2.0, 0);
+	buttress_array(width, length, height, angle, spacing, count);
+	endxlate();
+	endrotate();
+}
+
+/* width is yaxis, length is xaxis, h=zaxis, angle 0 = vertical, degrees */
+static void buttressed_foundation(double width, double length,
+					double height, double buttress_angle,
+					double buttress_interval)
+{
+	onion();
+	xlate(0, 0, height / 2.0);
+	cube(length, width, height, 1);
+	endxlate();
+	buttress_array_pair(length * 0.10, width * 0.2, height, buttress_angle,
+				(length / 5.0) * 0.9, 5, width * 0.85);
+	rotate(90, 0, 0, 1);
+	buttress_array_pair(width * 0.05, length * 0.2, height, buttress_angle,
+				(width / 5.0) * 0.9, 5, length * 0.85);
+	endrotate();
+	endonion();
 }
 
 int main(int argc, char *argv[])

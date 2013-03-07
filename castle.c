@@ -490,6 +490,17 @@ static void buttressed_foundation(double width, double length,
 	endonion();
 }
 
+static void inverted_buttressed_foundation(double width, double length,
+					double height, double buttress_angle,
+					double buttress_interval)
+{
+	xlate(0, 0, height);
+	rotate(180, 1, 0, 0);
+	buttressed_foundation(width, length, height, buttress_angle, buttress_interval);
+	endrotate();
+	endxlate();
+}
+
 int main(int argc, char *argv[])
 {
 	struct timeval tv;

@@ -613,14 +613,12 @@ static void crenelation_array(double width, double length, double height, double
 
 static void crenelation_matrix(double width, double length, double height, double thickness)
 {
-	onion();
 	crenelation_array(length, width, height, thickness / 2.0,
 				(int) (length / thickness / 2)); 
 	rotate(90, 0, 0, 1);
 	crenelation_array(width, length, height, thickness / 2.0,
 				(int) (width / thickness / 2)); 
 	endrotate();
-	endonion();
 }
 
 static void crenelated_rectangle(double width, double length,

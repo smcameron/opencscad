@@ -563,7 +563,7 @@ static void keep_foundation(double width, double length, double height)
 static void keep_topper(double width, double length, double height)
 {
 	if (irandomn(100) < 30) {
-		english_house(width, length, height, height / 2.0);
+		english_house(width, length, height, min(width, length) * 0.75);
 		return;
 	}
 	if (irandomn(100) < 30) {
@@ -578,7 +578,7 @@ static void xkeep_topper(double width, double length, double height, int rot)
 	if (rot)
 		rotate(90, 0, 0, 1);
 	if (irandomn(100) < 30) {
-		english_house(width, length, height, height / 2.0);
+		english_house(width, length, height, min(width, length) * 0.75);
 		if (rot)
 			endrotate();
 		return;
@@ -721,17 +721,19 @@ int main(int argc, char *argv[])
 	cylinder(3, 10, 20);
 #endif
 	//fancy_roof(10, 20, 7);
-	//recursive_keep(0, 0, 200, 350, 50, 4);
+	recursive_keep(0, 0, 200, 350, 50, 4);
+#if 0
 	{
 		double l, w, h;
 
 	l = 450;
 	w = 150;
 	h = 100;
-	auto_gothic_hall(l, w, h, 1);
+	english_house(l, w, h, min(w, l) * 0.75);
 	}
 	//static void gothic_hall(double length, double width, double height,
 	// int larches, int warches, double border_thickness, int with_roof)
+#endif
 	return 0;
 }
 

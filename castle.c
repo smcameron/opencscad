@@ -738,10 +738,15 @@ int main(int argc, char *argv[])
 	cylinder(3, 10, 20);
 #endif
 	//fancy_roof(10, 20, 7);
+	scale(0.15, 0.15, 0.15);
 	keep_foundation(350, 200, 150);
 	xlate(0, 0, 150);
 	recursive_keep(0, 0, 200, 350, 50, 4);
 	endxlate();
+	endscale();
+	enclosure(8, 70.0, 90.0 * HEIGHT_RADIUS);
+	enclosure(6, 38.0, 140.0 * HEIGHT_RADIUS);
+	cylinder(3, 10, 20);
 #if 0
 	{
 		double l, w, h;

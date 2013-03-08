@@ -386,14 +386,20 @@ static void gabled_roof(double length, double width, double height)
 	endscale();
 }
 
+static void crenelated_rectangle(double width, double length,
+				double height, double crenheight, double wall_thickness);
+
 static fancy_roof(double length, double width, double height)
 {
+	onion();
 	intersection();
 	gabled_roof(length, width, height * 3);
 	rotate(90, 0, 0, 1);
 	gabled_roof(width, length, height);
 	endrotate();
 	endintersection();
+	crenelated_rectangle(width, length, height * 0.35, height * 0.15, width * 0.05);
+	endonion();
 }
 
 static void english_house_end(double width, double wall_height, double wall_thickness,
@@ -573,10 +579,10 @@ static void crenelation_matrix(double width, double length, double height, doubl
 {
 	onion();
 	crenelation_array(length, width, height, thickness / 2.0,
-				(int) (length / thickness)); 
+				(int) (length / thickness / 2)); 
 	rotate(90, 0, 0, 1);
 	crenelation_array(width, length, height, thickness / 2.0,
-				(int) (width / thickness)); 
+				(int) (width / thickness / 2)); 
 	endrotate();
 	endonion();
 }
@@ -605,10 +611,14 @@ int main(int argc, char *argv[])
 
 	gettimeofday(&tv, NULL);
 	srand(tv.tv_usec);
+#if 0
 	enclosure(8, 70.0, 90.0 * HEIGHT_RADIUS);
 	enclosure(6, 38.0, 140.0 * HEIGHT_RADIUS);
 	enclosure(4, 25.0, 180.0 * HEIGHT_RADIUS);
 	cylinder(3, 10, 20);
+#endif
+	//fancy_roof(100, 200, 70);
+	keep(100, 150);
 	return 0;
 }
 

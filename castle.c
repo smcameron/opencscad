@@ -663,7 +663,7 @@ static void recursive_keep(double x, double y, double width, double length, doub
 
 	if (level == 0 || irandomn(1000) < 300) {
 		xlate(x, y, 0);
-			xkeep_topper(width, length, height, (level % 2) == 0);
+			xkeep_topper(width, length, height, 1);
 		endxlate();
 		return;
 	}

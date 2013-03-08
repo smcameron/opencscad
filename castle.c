@@ -297,6 +297,9 @@ void gothic_arch(double width, double height, double depth)
 	double archheight;
 	double cubeheight;
 
+	if (height < width * 2.0)
+		width = height / 2.0;
+
 	radius = 5.0 * width / 4.0; 
 	archheight = width;
 	cubeheight = height - archheight;
@@ -370,9 +373,25 @@ static void gothic_hall(double length, double width, double height,
 	enddiff();
 	if (with_roof) {
 		xlate(0, 0, height * 1.05 + border_thickness * 2.0);
-		fancy_roof(width, length, height * 0.7);
+		fancy_roof(width, length, height * 2.0);
 		endxlate();
 	}
+}
+
+static void auto_gothic_hall(double length, double width, double height,
+	int with_roof)
+{
+	int larches, warches;
+	double border_thickness;
+	double bthick;
+
+	larches = (length / height);
+	warches = (width / height);
+	border_thickness = (length * 0.4) / larches;
+	bthick = (width * 0.4) / warches;
+	if (border_thickness > bthick)
+		border_thickness = bthick;
+	gothic_hall(length, width, height, larches, warches, border_thickness, with_roof);
 }
 
 static void gabled_roof(double length, double width, double height)
@@ -405,7 +424,8 @@ static fancy_roof(double length, double width, double height)
 	gabled_roof(width, length, height);
 	endrotate();
 	endintersection();
-	crenelated_rectangle(width, length, height * 0.35, height * 0.15, width * 0.05);
+	crenelated_rectangle(width, length, height * 0.35, height * 0.15,
+					hypot(length, width) * 0.05);
 	endonion();
 }
 
@@ -547,7 +567,8 @@ static void keep_topper(double width, double length, double height)
 		return;
 	}
 	if (irandomn(100) < 30) {
-		gothic_hall(length, width, height, 3, 2, length * 0.1, 1);
+		gothic_hall(length, width, height, (int) (length / height * 5.0), 
+				(int) (width / height * 5.0), length * 0.1, 1);
 		return;
 	}
 }
@@ -700,7 +721,17 @@ int main(int argc, char *argv[])
 	cylinder(3, 10, 20);
 #endif
 	//fancy_roof(10, 20, 7);
-	recursive_keep(0, 0, 200, 350, 50, 4);
+	//recursive_keep(0, 0, 200, 350, 50, 4);
+	{
+		double l, w, h;
+
+	l = 450;
+	w = 150;
+	h = 100;
+	auto_gothic_hall(l, w, h, 1);
+	}
+	//static void gothic_hall(double length, double width, double height,
+	// int larches, int warches, double border_thickness, int with_roof)
 	return 0;
 }
 

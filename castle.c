@@ -195,11 +195,11 @@ static void pointy_tower(double x, double y, double r, double h, int flying, dou
 	endxlate();
 }
 
-static void tower(double x, double y, double r, double h)
+static void generic_tower(double x, double y, double r, double h, int flying_allowed)
 {
 	double origh = h;
 	double origr = r;
-	int flying = (irandomn(100) < 30);
+	int flying = (irandomn(100) < 30) && flying_allowed;
 	h = perturbup(h, TOWER_HEIGHT_RANDOMNESS);
 	r = perturb(r, TOWER_RADIUS_RANDOMNESS);
 	switch (irandomn(20)) {
@@ -229,6 +229,11 @@ static void tower(double x, double y, double r, double h)
 		round_tower(x, y, r, h, flying );
 		break;
 	}
+}
+
+static void tower(double x, double y, double r, double h)
+{
+	generic_tower(x, y, r, h, 1);
 }
 
 static void wall(double x1, double y1, double x2, double y2, double thickness, double height)
@@ -569,7 +574,8 @@ static void xkeep_topper(double width, double length, double height, int rot)
 	crenelated_rectangle(length, width, height * 0.2, length * 0.1, length * 0.05);
 	endrotate();
 	if (irandomn(1000) < 500)
-		tower(0, 0, min(length, width) / 3.0, perturb(height * 2.0, 0.2));
+		generic_tower(0, 0, min(length, width) / 3.0,
+				perturb(height * 2.0, 0.2), 0);
 }
 
 static void keep(double width, double length)

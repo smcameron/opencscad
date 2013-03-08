@@ -546,6 +546,59 @@ static void keep(double width, double length)
 	endxlate();
 }
 
+static void crenelation_array(double width, double length, double height, double thickness, int n)
+{
+	int i;
+	double x;
+	double spacing;
+
+	spacing = (width - thickness * 2) / (double) n;
+
+	printf("/* n = %d */\n", n);
+	x = -(spacing * (n - 1)) / 2.0;
+
+	xlate(0, 0, height / 2.0);
+	for (i = 0; i < n; i++) {
+		xlate(x, 0, 0);
+		rotate(90, 0, 0, 1);
+		cube(length * 1.1, thickness, height, 1);
+		endrotate();
+		endxlate();
+		x += spacing;
+	}
+	endxlate();
+}
+
+static void crenelation_matrix(double width, double length, double height, double thickness)
+{
+	onion();
+	crenelation_array(length, width, height, thickness / 2.0,
+				(int) (length / thickness)); 
+	rotate(90, 0, 0, 1);
+	crenelation_array(width, length, height, thickness / 2.0,
+				(int) (width / thickness)); 
+	endrotate();
+	endonion();
+}
+
+static void crenelated_rectangle(double width, double length,
+				double height, double crenheight, double wall_thickness)
+{
+	double spacing = wall_thickness * 2;
+
+	diff();
+	xlate(0, 0, height / 2.0);
+	diff();
+	cube(width, length, height, 1);
+	cube(width - 2 * wall_thickness, length - 2 * wall_thickness, height + wall_thickness, 1);
+	enddiff();
+	endxlate();
+	xlate(0, 0, height - crenheight * 0.95);
+	crenelation_matrix(length, width, crenheight, wall_thickness);
+	endxlate();
+	enddiff();
+}
+
 int main(int argc, char *argv[])
 {
 	struct timeval tv;

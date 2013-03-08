@@ -11,6 +11,8 @@
 #define TOWER_HEIGHT_RANDOMNESS (0.15)
 #define TOWER_RADIUS_RANDOMNESS (0.5)
 
+#define min(a, b) ((a) < (b) ? (a) : (b))
+
 static double randomn(double n)
 {
 	return n * ((double) rand() / (double) RAND_MAX);
@@ -535,11 +537,39 @@ static void keep_foundation(double width, double length, double height)
 
 static void keep_topper(double width, double length, double height)
 {
-	if (irandomn(100) < 50) {
+	if (irandomn(100) < 30) {
 		english_house(width, length, height, height / 2.0);
-	} else {
-		gothic_hall(length, width, height, 3, 2, length * 0.1, 1);
+		return;
 	}
+	if (irandomn(100) < 30) {
+		gothic_hall(length, width, height, 3, 2, length * 0.1, 1);
+		return;
+	}
+}
+
+static void xkeep_topper(double width, double length, double height, int rot)
+{
+	if (rot)
+		rotate(90, 0, 0, 1);
+	if (irandomn(100) < 30) {
+		english_house(width, length, height, height / 2.0);
+		if (rot)
+			endrotate();
+		return;
+	}
+	if (irandomn(100) < 30) {
+		gothic_hall(length, width, height, 3, 2, length * 0.1, 1);
+		if (rot)
+			endrotate();
+		return;
+	}
+	if (rot)
+		endrotate();
+	rotate(90, 0, 0, 1);
+	crenelated_rectangle(length, width, height * 0.2, length * 0.1, length * 0.05);
+	endrotate();
+	if (irandomn(1000) < 500)
+		tower(0, 0, min(length, width) / 3.0, perturb(height * 2.0, 0.2));
 }
 
 static void keep(double width, double length)
@@ -605,6 +635,54 @@ static void crenelated_rectangle(double width, double length,
 	enddiff();
 }
 
+static void keep_block(double width, double length, double height)
+{
+	xlate(0, 0, height / 2.0);
+	cube(width, length, height, 1);
+	endxlate();
+}
+
+static void recursive_keep(double x, double y, double width, double length, double height, int level)
+{
+	int i;
+	double nw, nl;
+
+	if (irandomn(1000) < 300) {
+		xlate(x, y, 0);
+		keep_block(width, length, height);
+		endxlate();
+		xlate(0, 0, height);
+		recursive_keep(x, y, width, length, perturb(height, 0.2), level);
+		endxlate();
+		return;
+	}
+
+	if (level == 0 || irandomn(1000) < 300) {
+		xlate(x, y, 0);
+			xkeep_topper(width, length, height, (level % 2) == 0);
+		endxlate();
+		return;
+	}
+
+	i = irandomn(100);
+
+	nl = length / 2.0;
+	nw = width / 2.0;
+
+	xlate(x, y, 0);
+	keep_block(width, length, height);
+	endxlate();
+	xlate(0, 0, height);
+	if ((level % 2) == 0) {
+		recursive_keep(x - width / 4.0, y, nw, length, perturb(height, 0.2), level - 1);
+		recursive_keep(x + width / 4.0, y, nw, length, perturb(height, 0.2), level - 1);
+	} else {
+		recursive_keep(x, y - length / 4.0, width, nl, perturb(height, 0.2), level - 1);
+		recursive_keep(x, y + length / 4.0, width, nl, perturb(height, 0.2), level - 1);
+	}
+	endxlate();
+}
+
 int main(int argc, char *argv[])
 {
 	struct timeval tv;
@@ -617,8 +695,8 @@ int main(int argc, char *argv[])
 	enclosure(4, 25.0, 180.0 * HEIGHT_RADIUS);
 	cylinder(3, 10, 20);
 #endif
-	//fancy_roof(100, 200, 70);
-	keep(100, 150);
+	//fancy_roof(10, 20, 7);
+	recursive_keep(0, 0, 200, 350, 50, 4);
 	return 0;
 }
 

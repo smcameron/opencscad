@@ -348,8 +348,10 @@ static void gothic_matrix(double length, double width, double height,
 	endonion();
 }
 
+static fancy_roof(double length, double width, double height);
+
 static void gothic_hall(double length, double width, double height,
-	int larches, int warches, double border_thickness)
+	int larches, int warches, double border_thickness, int with_roof)
 {
 	diff();
 	xlate(0, 0, (height * 1.05) / 2.0 + border_thickness);
@@ -359,6 +361,11 @@ static void gothic_hall(double length, double width, double height,
 	gothic_matrix(length, width, height, larches, warches, border_thickness);
 	endxlate();
 	enddiff();
+	if (with_roof) {
+		xlate(0, 0, height * 1.05 + border_thickness * 2.0);
+		fancy_roof(width, length, height * 0.7);
+		endxlate();
+	}
 }
 
 static void gabled_roof(double length, double width, double height)
@@ -377,6 +384,16 @@ static void gabled_roof(double length, double width, double height)
 	endxlate();
 	enddiff();
 	endscale();
+}
+
+static fancy_roof(double length, double width, double height)
+{
+	intersection();
+	gabled_roof(length, width, height * 3);
+	rotate(90, 0, 0, 1);
+	gabled_roof(width, length, height);
+	endrotate();
+	endintersection();
 }
 
 static void english_house_end(double width, double wall_height, double wall_thickness,
@@ -409,7 +426,7 @@ static void english_house(double width, double length, double height, double pea
 
 	diff();
 	onion();
-	gothic_hall(length * 1.05, width, height, 0, 1, wall_thickness);
+	gothic_hall(length * 1.05, width, height, 0, 1, wall_thickness, 0);
 	xlate(-length / 2.05, 0, 0);
 	english_house_end(width, height * 1.3, wall_thickness, peak, peak * 1.2); 
 	endxlate();
@@ -501,6 +518,34 @@ static void inverted_buttressed_foundation(double width, double length,
 	endxlate();
 }
 
+static void keep_foundation(double width, double length, double height) 
+{
+	if (irandomn(100) < 50) {
+		buttressed_foundation(width, length, height, 8, length / 6.0); 
+	} else {
+		inverted_buttressed_foundation(width, length, height, 8, length / 6.0); 
+	}
+}
+
+static void keep_topper(double width, double length, double height)
+{
+	if (irandomn(100) < 50) {
+		english_house(width, length, height, height / 2.0);
+	} else {
+		gothic_hall(length, width, height, 3, 2, length * 0.1, 1);
+	}
+}
+
+static void keep(double width, double length)
+{
+	double fheight = hypot(width, length) * 0.7;
+
+	keep_foundation(width, length, fheight);
+	xlate(0, 0, fheight);
+	keep_topper(width, length, fheight);
+	endxlate();
+}
+
 int main(int argc, char *argv[])
 {
 	struct timeval tv;
@@ -510,7 +555,7 @@ int main(int argc, char *argv[])
 	enclosure(8, 70.0, 90.0 * HEIGHT_RADIUS);
 	enclosure(6, 38.0, 140.0 * HEIGHT_RADIUS);
 	enclosure(4, 25.0, 180.0 * HEIGHT_RADIUS);
-	cylinder(3, 100, 100);
+	cylinder(3, 10, 20);
 	return 0;
 }
 

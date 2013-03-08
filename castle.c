@@ -553,11 +553,14 @@ static void inverted_buttressed_foundation(double width, double length,
 
 static void keep_foundation(double width, double length, double height) 
 {
+	buttressed_foundation(width, length, height, 8, length / 6.0); 
+#if 0
 	if (irandomn(100) < 50) {
 		buttressed_foundation(width, length, height, 8, length / 6.0); 
 	} else {
 		inverted_buttressed_foundation(width, length, height, 8, length / 6.0); 
 	}
+#endif
 }
 
 static void keep_topper(double width, double length, double height)
@@ -670,7 +673,6 @@ static void keep_block(double width, double length, double height)
 static void recursive_keep(double x, double y, double width, double length, double height, int level)
 {
 	int i;
-	double nw, nl;
 
 	if (irandomn(1000) < 300) {
 		xlate(x, y, 0);
@@ -691,19 +693,34 @@ static void recursive_keep(double x, double y, double width, double length, doub
 
 	i = irandomn(100);
 
-	nl = length / 2.0;
-	nw = width / 2.0;
-
 	xlate(x, y, 0);
 	keep_block(width, length, height);
 	endxlate();
 	xlate(0, 0, height);
 	if ((level % 2) == 0) {
-		recursive_keep(x - width / 4.0, y, nw, length, perturb(height, 0.2), level - 1);
-		recursive_keep(x + width / 4.0, y, nw, length, perturb(height, 0.2), level - 1);
+		double offset, nw1, nw2, x1, x2;
+		offset = randomn(width * 0.2) - (0.1 * width);
+		offset = 0.0;
+		nw1 = (width / 2.0) + offset;
+		nw2 = (width - nw1); 
+		x1 = x - offset / 2.0 -0.25 * width;
+		x2 = x + 0.25 * width  - offset / 2.0;
+		printf("/* x/y = %lf,%lf, o=%lf nw1 = %lf, nw2 = %lf, x1 = %lf, x2 = %lf */\n",
+			x, y, offset, nw1, nw2, x1, x2);
+		recursive_keep(x1, y, nw1, length, perturb(height, 0.2), level - 1);
+		recursive_keep(x2, y, nw2, length, perturb(height, 0.2), level - 1);
 	} else {
-		recursive_keep(x, y - length / 4.0, width, nl, perturb(height, 0.2), level - 1);
-		recursive_keep(x, y + length / 4.0, width, nl, perturb(height, 0.2), level - 1);
+		double offset, nl1, nl2, y1, y2;
+		offset = randomn(length * 0.2) - (0.1 * length);
+		offset = 0.0;
+		nl1 = (length / 2.0) + offset;
+		nl2 = (length - nl1);
+		y1 = y - offset / 2.0 - 0.25 * length;
+		y2 = y + 0.25 * length - offset / 2.0;
+		printf("/* x/y = %lf,%lf, o=%lf nl1 = %lf, nl2 = %lf, y1 = %lf, y2 = %lf */\n",
+			x, y, offset, nl1, nl2, y1, y2);
+		recursive_keep(x, y1, width, nl1, perturb(height, 0.2), level - 1);
+		recursive_keep(x, y2, width, nl2, perturb(height, 0.2), level - 1);
 	}
 	endxlate();
 }
@@ -721,7 +738,10 @@ int main(int argc, char *argv[])
 	cylinder(3, 10, 20);
 #endif
 	//fancy_roof(10, 20, 7);
+	keep_foundation(350, 200, 150);
+	xlate(0, 0, 150);
 	recursive_keep(0, 0, 200, 350, 50, 4);
+	endxlate();
 #if 0
 	{
 		double l, w, h;

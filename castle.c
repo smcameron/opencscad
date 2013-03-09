@@ -37,6 +37,18 @@ static double perturbup(double value, double amount)
 
 static void arched_opening(double height, double width, double depth)
 {
+	/* make the windows 10x too big, then scale 10x down.  This
+	   prevents small windows from having bad artifcacts due
+	   to openscad's weird curve rendering.  Judicious tweaking of
+	   $fa, $fn, could probably accomplish the same thing, but
+	   this seemed easier to me.
+	 */
+	height *= 10.0;
+	width *= 10.0;
+	depth *= 10.0;
+	scale(0.1, 0.1, 0.1);
+
+
 	xlate(-width / 2.0, -depth / 2.0, -height / 2.0);
 	onion();
 	cube(width, depth, height - width / 2.0, 0);
@@ -47,6 +59,7 @@ static void arched_opening(double height, double width, double depth)
 	endxlate();
 	endonion();
 	endxlate();
+	endscale();
 }
 
 void crenelation(double h, double r)

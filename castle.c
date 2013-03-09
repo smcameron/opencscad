@@ -676,10 +676,41 @@ static void crenelated_rectangle(double width, double length,
 	enddiff();
 }
 
+static void keep_block_windows(double width, double length, double height)
+{
+	int nwindows;
+	int i;
+
+	nwindows = 7;
+
+	for (i = 0; i < nwindows; i++) {
+		int dix, diz;
+		double dz, dx, w, h;
+
+		dix = irandomn(4) - 2;
+		diz = irandomn(2) - 1 ;
+		dx = dix * length / 4.0 + length / 8.0;
+		dz = diz * height / 2.0 + height / 4.0; 
+		// dx = randomn(length * 0.65) - 0.325 * length;
+		// dz = randomn(height * 0.6) - 0.3 * height ;
+		h = height * 0.2;
+		w = height / 2.5;
+		xlate(0, dx, dz);
+		gothic_arch(w, h, width * 2);
+		endxlate();
+	}
+}
+
 static void keep_block(double width, double length, double height)
 {
 	xlate(0, 0, height / 2.0);
+	diff();
 	cube(width, length, height, 1);
+	keep_block_windows(width, length, height);
+	rotate(90, 0, 0, 1);
+	keep_block_windows(length, width, height);
+	endrotate();
+	enddiff();
 	endxlate();
 }
 

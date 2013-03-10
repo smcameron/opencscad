@@ -795,10 +795,72 @@ static void initialize_random_seed(void)
 	srand(tv.tv_usec);
 }
 
+static void do_tests(void)
+{
+#if 0	
+	arched_opening(50, 20, 10);
+#endif
+#if 0
+	crenelation(10, 20);
+#endif
+#if 0
+	add_windows(20, 100);
+#endif
+#if 0
+	generic_tower(0, 0, 20, 100, irandomn(100) < 50);
+#endif
+#if 0
+	wall(-200, -200, 200, 200, 20, 100);
+#endif
+#if 0
+	gothic_arch(10, 20, 5);
+#endif
+#if 0
+	gothic_arch_array(100, 5, 20, 5, 4);
+#endif
+#if 0
+	gothic_matrix(100, 50, 75, 4, 2, 4);
+#endif
+#if 0
+	gabled_roof(100, 50, 50);
+#endif
+#if 0
+	crenelation_matrix(50, 100, 10, 7);
+#endif
+#if 0
+	crenelated_rectangle(50, 100, 50, 10, 7);
+#endif
+#if 0
+	fancy_roof(50, 150, 60);
+#endif
+#if 0
+	auto_gothic_hall(300, 150, 75, 1);
+#endif
+#if 0
+	english_house(75, 150, 125, 50);
+#endif
+#if 0
+	buttressed_foundation(100, 200, 50, 8, 15);
+#endif
+#if 0
+	keep_block(100, 200, 100);
+#endif
+#if 0
+	enclosure(5, 200, 100);
+#endif
+#if 0
+	recursive_keep(0, 0, 200, 350, 50, 4);
+#endif
+}
+
 int main(int argc, char *argv[])
 {
 	initialize_random_seed();
+#if 1
 	make_castle();
+#else
+	do_tests();
+#endif
 	return 0;
 }
 

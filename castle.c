@@ -775,13 +775,6 @@ int main(int argc, char *argv[])
 
 	gettimeofday(&tv, NULL);
 	srand(tv.tv_usec);
-#if 0
-	enclosure(8, 70.0, 90.0 * HEIGHT_RADIUS);
-	enclosure(6, 38.0, 140.0 * HEIGHT_RADIUS);
-	enclosure(4, 25.0, 180.0 * HEIGHT_RADIUS);
-	cylinder(3, 10, 20);
-#endif
-	//fancy_roof(10, 20, 7);
 	scale(0.85, 0.85, 0.85);
 	onion();
 	scale(0.15, 0.15, 0.15);
@@ -796,19 +789,6 @@ int main(int argc, char *argv[])
 	enclosure(6, 38.0, 140.0 * HEIGHT_RADIUS);
 	endonion();
 	endscale();
-	//cylinder(3, 10, 20);
-#if 0
-	{
-		double l, w, h;
-
-	l = 450;
-	w = 150;
-	h = 100;
-	english_house(l, w, h, min(w, l) * 0.75);
-	}
-	//static void gothic_hall(double length, double width, double height,
-	// int larches, int warches, double border_thickness, int with_roof)
-#endif
 	return 0;
 }
 

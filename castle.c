@@ -769,12 +769,8 @@ static void recursive_keep(double x, double y, double width, double length, doub
 	endxlate();
 }
 
-int main(int argc, char *argv[])
+static void make_castle(void)
 {
-	struct timeval tv;
-
-	gettimeofday(&tv, NULL);
-	srand(tv.tv_usec);
 	scale(0.85, 0.85, 0.85);
 	onion();
 	scale(0.15, 0.15, 0.15);
@@ -789,6 +785,20 @@ int main(int argc, char *argv[])
 	enclosure(6, 38.0, 140.0 * HEIGHT_RADIUS);
 	endonion();
 	endscale();
+}
+
+static void initialize_random_seed(void)
+{
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+	srand(tv.tv_usec);
+}
+
+int main(int argc, char *argv[])
+{
+	initialize_random_seed();
+	make_castle();
 	return 0;
 }
 

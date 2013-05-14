@@ -19,6 +19,7 @@
 
 
 #include <stdio.h>
+#include <math.h>
 
 #define DEFINE_OPENCSCAD_GLOBALS
 #include "opencscad.h"

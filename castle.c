@@ -103,6 +103,21 @@ static void add_windows(double tower_radius, double tower_height)
 	}
 }
 
+static void hollow_angular_cylinder(double h, double r1,
+			double r2, double fa)
+{
+	if (r1 >= 10 && r2 >= 10) {
+		diff();
+		angular_cylinder(h, r1, r2, fa);
+		xlate(0, 0, -h * 0.1);
+		angular_cylinder(h * 0.8, r1 * 0.7, r2 * 0.7, fa);
+		endxlate();
+		enddiff();
+	} else {
+		angular_cylinder(h, r1, r2, fa);
+	}
+}
+
 static void angular_tower(double x, double y, double r, double h, int flying, double fa)
 {
 	xlate(x, y, 0);
@@ -115,7 +130,7 @@ static void angular_tower(double x, double y, double r, double h, int flying, do
 		diff();
 	onion();
 	if (flying) {
-		angular_cylinder(h * 0.75, r * 0.15, 0.15 * r, fa);
+		hollow_angular_cylinder(h * 0.75, r * 0.15, 0.15 * r, fa);
 		xlate(0, 0, h * 0.50);
 		angular_cylinder(h * 0.25, 0.10 * r, r * 1.2, fa);
 		xlate(0, 0, h * 0.25);
@@ -127,7 +142,7 @@ static void angular_tower(double x, double y, double r, double h, int flying, do
 		crenelation(2.3 * r, r * 2.0);
 		endxlate();
 	} else {
-		angular_cylinder(h, r, 0.80 * r, fa);
+		hollow_angular_cylinder(h, r, 0.80 * r, fa);
 		xlate(0, 0, h - 0.6 * r);
 		angular_cylinder(0.6 * r, 0.81 * r, r * 1.2, fa);
 		xlate(0, 0, r * 0.6);
@@ -171,7 +186,7 @@ static void pointy_tower(double x, double y, double r, double h, int flying, dou
 	diff();
 	onion();
 	if (flying) {
-		angular_cylinder(h * 0.75, 0.15 * r, 0.15 * r, fa);
+		hollow_angular_cylinder(h * 0.75, 0.15 * r, 0.15 * r, fa);
 		xlate(0, 0, h * 0.5);
 		angular_cylinder(h * 0.25, 0.10 * r, r * 1.2, fa);
 		xlate(0, 0, h * 0.25);
@@ -181,7 +196,7 @@ static void pointy_tower(double x, double y, double r, double h, int flying, dou
 		if (extra_pointy)
 			angular_cylinder(pointiness * 2 * r, 0.6 * r, 0, fa);
 	} else {
-		angular_cylinder(h, r, 0.80 * r, fa);
+		hollow_angular_cylinder(h, r, 0.80 * r, fa);
 		xlate(0, 0, h - 0.6 * r);
 		angular_cylinder(0.6 * r, 0.81 * r, r * 1.2, fa);
 		xlate(0, 0, r * 0.6);

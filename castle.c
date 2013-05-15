@@ -720,11 +720,32 @@ static void keep_block_windows(double width, double length, double height)
 	}
 }
 
+static void keep_block_void(double width, double length, double height)
+{
+	double w, l, h;
+
+	w = width * 0.8;
+	l = length * 0.8;
+	h = height * 0.8;
+
+	if (w < 10.0 || l < 10.0 || h < 10.0)
+		return;
+	xlate(0, 0, -0.30 * h);
+	xlate(0, 0, 0.25 * h);
+	gabled_roof(l, w, h / 2.0);
+	endxlate();
+	xlate(0, 0, -h / 4.0);
+	cube(w, l, h, 1);
+	endxlate();
+	endxlate();
+}
+
 static void keep_block(double width, double length, double height)
 {
 	xlate(0, 0, height / 2.0);
 	diff();
 	cube(width, length, height, 1);
+	keep_block_void(width, length, height);
 	keep_block_windows(width, length, height);
 	rotate(90, 0, 0, 1);
 	keep_block_windows(length, width, height);
@@ -863,6 +884,9 @@ static void do_tests(void)
 #endif
 #if 0
 	keep_block(100, 200, 100);
+#endif
+#if 0
+	keep_block_void(100, 200, 100);
 #endif
 #if 0
 	enclosure(5, 200, 100);

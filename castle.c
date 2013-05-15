@@ -109,8 +109,12 @@ static void hollow_angular_cylinder(double h, double r1,
 	if (r1 >= 10 && r2 >= 10) {
 		diff();
 		angular_cylinder(h, r1, r2, fa);
-		xlate(0, 0, -h * 0.1);
+		xlate(0, 0, -h * 0.30);
 		angular_cylinder(h * 0.8, r1 * 0.7, r2 * 0.7, fa);
+		endxlate();
+		xlate(0, 0, h * 0.45);
+		angular_cylinder(h * 0.35,
+			r2 * 0.75, r2 * 0.1, fa);
 		endxlate();
 		enddiff();
 	} else {

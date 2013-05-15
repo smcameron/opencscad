@@ -106,7 +106,7 @@ static void add_windows(double tower_radius, double tower_height)
 static void hollow_angular_cylinder(double h, double r1,
 			double r2, double fa)
 {
-	if (r1 >= 10 && r2 >= 10) {
+	if (r1 >= 5 && r2 >= 5) {
 		diff();
 		angular_cylinder(h, r1, r2, fa);
 		xlate(0, 0, -h * 0.30);

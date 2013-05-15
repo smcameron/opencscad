@@ -499,7 +499,7 @@ static void english_house(double width, double length, double height, double pea
 	english_house_end(width, height * 1.3, wall_thickness, peak, peak * 1.2); 
 	endxlate();
 
-	xlate(0, 0, height * 1.20);
+	xlate(0, 0, height * 1.15);
 	rotate(90, 0, 0, 1);
 	gabled_roof(length, width, peak);
 	endrotate();

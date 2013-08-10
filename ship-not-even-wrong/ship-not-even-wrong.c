@@ -187,6 +187,32 @@ static void elaborate_cylinder(float length, float r1, float r2, int nelaboratio
 		}
 	end();
 }
+
+static void thruster_module(char *modulename, float length, float r1, float r2)
+{
+	int nelaborations = randn(2);
+
+	module(modulename);
+		diff();
+			elaborate_cylinder(length, r1, r2, nelaborations);
+			xlate(0, 0, length * 0.05);
+				cyl(length, r1 * 0.95, r2 * 0.95, 1);
+			end();
+		end();
+	end_module();
+}
+
+static void thruster(float length, float r1, float r2)
+{
+	static int modulenum = 0;
+	char modname[100];
+	float v = randf(0.3) - 0.15 + 1.0;
+	float v2 = randf(0.3) - 0.15 + 1.0;
+
+	sprintf(modname, "thruster_%d", modulenum++);
+	thruster_module(modname, length, r1 * v, r2 * v2);
+	call_module(modname);
+}
 	
 int main(int argc, char *argv[])
 {
@@ -208,7 +234,7 @@ int main(int argc, char *argv[])
 	cylindrical_module("testthing", 10, 5, 3);
 	call_module("testthing");
 #endif
-	elaborate_cylinder(70, 8, 7, 2);
+	thruster(50, 20, 30);
 	finalize();
 	return 0;
 }

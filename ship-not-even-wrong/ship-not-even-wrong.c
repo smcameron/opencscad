@@ -57,7 +57,7 @@ static void cylinder_ribs(float length, float r1, float r2, int nribs)
 				cube(maxf(r1, r2) * 2.1, maxf(r1, r2) * 2.1, length + 2, 1);
 			end();
 		end();
-	end();
+	end_module();
 
 	module(ribsetfn);
 		onion();
@@ -68,7 +68,7 @@ static void cylinder_ribs(float length, float r1, float r2, int nribs)
 			angle += dangle;
 		}
 		end();
-	end();
+	end_module();
 	call_module(ribsetfn);
 }
 
@@ -84,16 +84,20 @@ static void cylindrical_module(char *modulename, float length, float r1, float r
 {
 	module(modulename);
 		cylindrical_thing(length, r1, r2);
-	end();
+	end_module();
 }
 	
 int main(int argc, char *argv[])
 {
+	opencscad_init();
 #if 0
 	cylindrical_module("testthing", 10, 5, 3);
 	call_module("testthing");
 #endif
-	cylinder_ribs(10, 5, 3, 5);
+	radial_dist(10, 30.0);
+		cylinder_ribs(10, 5, 3, 5);
+	end_radial_dist();
+	finalize();
 	return 0;
 }
 

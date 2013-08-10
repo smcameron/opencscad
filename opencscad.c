@@ -19,12 +19,50 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <errno.h>
+
+#define MAX_FILES 1000
+
+static char *fname[MAX_FILES];
+static int nfiles = 0;
+static FILE *fstack[MAX_FILES];
+static int current_file = -1;
+#define fss fstack[current_file]
 
 #define DEFINE_OPENCSCAD_GLOBALS
 #include "opencscad.h"
 #undef DEFINE_OPENCSCAD_GLOBALS
+
+static void pushfile(FILE *f)
+{
+	current_file++;
+	fstack[current_file] = f;
+}
+
+static void popfile(void)
+{
+	fclose(fss);
+	current_file--;
+}
+
+static void newfile(char *filename)
+{
+	FILE *f;
+
+	fname[nfiles] = strdup(filename);
+	nfiles++;
+
+	/* "x" mode is glibc specific, fopen won't succeed if file already exists. */
+	f = fopen(filename, "w+x");
+	if (!f) {
+		fprintf(stderr, "fopen failed for file '%s': %s\n", filename, strerror(errno));
+		exit(1);
+	}
+	pushfile(f);
+}
 
 char indentation[1000] = {0};
 
@@ -45,14 +83,14 @@ static void unindent(void)
 void end(void)
 {
 	unindent();
-	printf("%s}\n", indentation);
+	fprintf(fss, "%s}\n", indentation);
 	if (strlen(indentation) == 0)
-		printf("\n");
+		fprintf(fss, "\n");
 }
 
 static void ind(void)
 {
-	printf("%s", indentation);
+	fprintf(fss, "%s", indentation);
 }
 
 void fixup(double *x)
@@ -67,7 +105,7 @@ void cube(double x, double y, double z, int center)
 	fixup(&y);
 	fixup(&z);
 	ind();
-	printf("cube(size = [%g, %g, %g], center = %s);\n",
+	fprintf(fss, "cube(size = [%g, %g, %g], center = %s);\n",
 		x, y, z, center ? "true" : "false");
 }
 
@@ -75,7 +113,7 @@ void sphere(double r)
 {
 	fixup(&r);
 	ind();
-	printf("sphere(r = %g);\n", r);
+	fprintf(fss, "sphere(r = %g);\n", r);
 }
 
 void angular_cyl(double h, double r1, double r2, double fa, int centered)
@@ -85,10 +123,10 @@ void angular_cyl(double h, double r1, double r2, double fa, int centered)
 	fixup(&r2);
 	ind();
 	if (fa >= 90.0) {
-		printf("cylinder(h = %g, r1 = %g, r2 = %g, %s$fn = 4);\n", h, r1, r2,
+		fprintf(fss, "cylinder(h = %g, r1 = %g, r2 = %g, %s$fn = 4);\n", h, r1, r2,
 			centered ? "center = true, " : "");
 	} else {
-		printf("cylinder(h = %g, r1 = %g, r2 = %g, %s$fa = %g);\n", h, r1, r2,
+		fprintf(fss, "cylinder(h = %g, r1 = %g, r2 = %g, %s$fa = %g);\n", h, r1, r2,
 			centered ? "center = true, " : "", fa);
 	}
 }
@@ -104,7 +142,7 @@ void cyl(double h, double r1, double r2, int centered)
 	fixup(&r1);
 	fixup(&r2);
 	ind();
-	printf("cylinder(h = %g, r1 = %g, r2 = %g%s);\n", h, r1, r2,
+	fprintf(fss, "cylinder(h = %g, r1 = %g, r2 = %g%s);\n", h, r1, r2,
 		centered ? ", center = true" : "");
 }
 
@@ -116,7 +154,7 @@ void cylinder(double h, double r1, double r2)
 void onion(void)
 {
 	ind();
-	printf("union() {\n");
+	fprintf(fss, "union() {\n");
 	indent();
 }
 
@@ -128,7 +166,7 @@ void endonion(void)
 void diff(void) 
 {
 	ind();
-	printf("difference() {\n");
+	fprintf(fss, "difference() {\n");
 	indent();
 }
 
@@ -139,7 +177,7 @@ void enddiff(void)
 
 void intersection(void) 
 {
-	printf("intersection() {\n");
+	fprintf(fss, "intersection() {\n");
 }
 
 void endintersection(void)
@@ -153,7 +191,7 @@ void xlate(double x, double y, double z)
 	fixup(&y);
 	fixup(&z);
 	ind();
-	printf("translate(v = [%g, %g, %g]) {\n", x, y, z);
+	fprintf(fss, "translate(v = [%g, %g, %g]) {\n", x, y, z);
 	indent();
 }
 
@@ -168,7 +206,7 @@ void scale(double x, double y, double z)
 	fixup(&y);
 	fixup(&z);
 	ind();
-	printf("scale(v = [%g, %g, %g]) {\n", x, y, z);
+	fprintf(fss, "scale(v = [%g, %g, %g]) {\n", x, y, z);
 	indent();
 }
 
@@ -184,7 +222,7 @@ void rotate(double angle, double x, double y, double z)
 	fixup(&y);
 	fixup(&z);
 	ind();
-	printf("rotate(a = %g, v = [%g, %g, %g]) {\n", angle, x, y, z);
+	fprintf(fss, "rotate(a = %g, v = [%g, %g, %g]) {\n", angle, x, y, z);
 	indent();
 }
 
@@ -199,7 +237,7 @@ void square(double x, double y, int center)
 	fixup(&x);
 	fixup(&y);
 	ind();
-	printf("square(size = [%g, %G], center = %s);\n",
+	fprintf(fss, "square(size = [%g, %G], center = %s);\n",
 		x, y, center ? "true" : "false");
 }
 
@@ -207,7 +245,7 @@ void circle(double r)
 {
 	fixup(&r);
 	ind();
-	printf("circle(r = %g);\n", r);
+	fprintf(fss, "circle(r = %g);\n", r);
 }
 
 void polygon(struct opencscad_2dpoint point[], int npoints,
@@ -216,49 +254,55 @@ void polygon(struct opencscad_2dpoint point[], int npoints,
 	int i, j;
 
 	ind();
-	printf("polygon(points = [");
+	fprintf(fss, "polygon(points = [");
 	for (i = 0; i < npoints; i++) {
-		printf("[%g, %g]", point[i].x, point[i].y);
+		fprintf(fss, "[%g, %g]", point[i].x, point[i].y);
 		if (i != npoints-1)
-			printf(",");
+			fprintf(fss, ",");
 	}
-	printf("],\n");
+	fprintf(fss, "],\n");
 	indent();
 	ind();
-	printf("paths = [");
+	fprintf(fss, "paths = [");
 	indent();
 	for (i = 0; path[i]; i++) {
 		ind();
-		printf("[");
+		fprintf(fss, "[");
 		for (j = 0; path[i][j] != -1; j++) {
-			printf("%d", path[i][j]);
+			fprintf(fss, "%d", path[i][j]);
 			if (path[i][j+1] != -1)
-				printf(", ");
+				fprintf(fss, ", ");
 		}
-		printf("]");
+		fprintf(fss, "]");
 
 		if (!path[i+1])
-			printf(",");
-		printf("\n");
+			fprintf(fss, ",");
+		fprintf(fss, "\n");
 	} 
 	unindent();
 	ind();
-	printf("]);\n");
+	fprintf(fss, "]);\n");
 	unindent();
 }
 
 void module(char *module_name)
 {
-	ind();
-	printf("module %s()\n", module_name);
-	printf("{\n");
+	newfile(module_name);
+	fprintf(fss, "module %s()\n", module_name);
+	fprintf(fss, "{\n");
 	indent();
+}
+
+void end_module(void)
+{
+	end();
+	popfile();
 }
 
 void call_module(char *module_name)
 {
 	ind();
-	printf("%s();\n", module_name);
+	fprintf(fss, "%s();\n", module_name);
 }
 
 void radial_dist(int count, float r)
@@ -266,13 +310,13 @@ void radial_dist(int count, float r)
 	float da = 360.0 / (float) count;
 
 	ind();
-	printf("for ( i = [ 0 : %d ] ) {\n", count);
+	fprintf(fss, "for ( i = [ 0 : %d ] ) {\n", count);
 	indent();
 		ind();
-		printf("rotate(a = i * %f, v = [0, 0, 1]) {\n", da);
+		fprintf(fss, "rotate(a = i * %f, v = [0, 0, 1]) {\n", da);
 		indent();
 			ind();
-			printf("translate(v = [%f, 0, 0]) {\n", r);
+			fprintf(fss, "translate(v = [%f, 0, 0]) {\n", r);
 			indent();
 }
 
@@ -281,5 +325,26 @@ void end_radial_dist(void)
 	end();
 	end();
 	end();
+}
+
+void opencscad_init(void)
+{
+	newfile("main_openscad_tmpfile.txt");
+}
+
+void finalize(void)
+{
+	int i;
+	char cmd[1000];
+
+	popfile();
+	fstack[0] = stdout;
+	for (i = 1; i < nfiles; i++) {
+		sprintf(cmd, "cat %s", fname[i]);
+		system(cmd);
+		remove(fname[i]);
+	}
+	system("cat main_openscad_tmpfile.txt");
+	fflush(stdout);
 }
 

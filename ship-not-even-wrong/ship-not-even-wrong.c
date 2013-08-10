@@ -213,6 +213,43 @@ static void thruster(float length, float r1, float r2)
 	thruster_module(modname, length, r1 * v, r2 * v2);
 	call_module(modname);
 }
+
+static void thruster_cluster(float r)
+{
+	static int modnum = 0;
+	int ttype = randn(3);
+	float v1, v2, v3;
+	float r1, r2, r3;
+	int n;
+	char modname[100];
+
+
+	onion();
+		cyl(r * 0.2, r1 = r, r2 = r, 1);
+		xlate(0, 0, r * 0.19);
+		v1 = randf(0.3) - 0.15 + 1.0;
+		v2 = randf(0.3) - 0.15 + 1.0;
+		v3 = randf(0.3) - 0.15 + 1.0;
+		switch(ttype) {
+			case 0: thruster(r * v1  * 1.5, r * v2 * 0.4, r * v3);
+				break;
+			default:
+				n = randn(7) + 2;
+				r1 = r * 0.5 * v1;
+				r2 = r * 0.2 * v2;
+				r3 = r * 0.7;
+				sprintf(modname, "thruster_r_%d", modnum++);
+				thruster(r1 * v3 * 1.5, r1 * v2 * 0.4, r1 * v3);
+				thruster_module(modname, r2 * v3 * 1.5, r2 * v2 * 0.4, r2 * v3); 
+				radial_dist(n, r3);
+					call_module(modname);
+				end_radial_dist();
+				break;
+			
+		}
+		end();
+	end();
+}
 	
 int main(int argc, char *argv[])
 {
@@ -234,7 +271,7 @@ int main(int argc, char *argv[])
 	cylindrical_module("testthing", 10, 5, 3);
 	call_module("testthing");
 #endif
-	thruster(50, 20, 30);
+	thruster_cluster(20);
 	finalize();
 	return 0;
 }

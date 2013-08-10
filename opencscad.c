@@ -78,26 +78,39 @@ void sphere(double r)
 	printf("sphere(r = %g);\n", r);
 }
 
-void angular_cylinder(double h, double r1, double r2, double fa)
+void angular_cyl(double h, double r1, double r2, double fa, int centered)
 {
 	fixup(&h);
 	fixup(&r1);
 	fixup(&r2);
 	ind();
 	if (fa >= 90.0) {
-		printf("cylinder(h = %g, r1 = %g, r2 = %g, $fn = 4);\n", h, r1, r2);
+		printf("cylinder(h = %g, r1 = %g, r2 = %g, %s$fn = 4);\n", h, r1, r2,
+			centered ? "center = true, " : "");
 	} else {
-		printf("cylinder(h = %g, r1 = %g, r2 = %g, $fa = %g);\n", h, r1, r2, fa);
+		printf("cylinder(h = %g, r1 = %g, r2 = %g, %s$fa = %g);\n", h, r1, r2,
+			centered ? "center = true, " : "", fa);
 	}
 }
 
-void cylinder(double h, double r1, double r2)
+void angular_cylinder(double h, double r1, double r2, double fa)
+{
+	angular_cyl(h, r1, r2, fa, 0);
+}
+
+void cyl(double h, double r1, double r2, int centered)
 {
 	fixup(&h);
 	fixup(&r1);
 	fixup(&r2);
 	ind();
-	printf("cylinder(h = %g, r1 = %g, r2 = %g);\n", h, r1, r2);
+	printf("cylinder(h = %g, r1 = %g, r2 = %g%s);\n", h, r1, r2,
+		centered ? ", center = true" : "");
+}
+
+void cylinder(double h, double r1, double r2)
+{
+	cyl(h, r1, r2, 0);
 }
 
 void onion(void)

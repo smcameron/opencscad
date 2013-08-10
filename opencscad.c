@@ -23,6 +23,7 @@
 #include <math.h>
 #include <string.h>
 #include <errno.h>
+#include <stdarg.h>
 
 #define MAX_FILES 1000
 
@@ -35,6 +36,18 @@ static int current_file = -1;
 #define DEFINE_OPENCSCAD_GLOBALS
 #include "opencscad.h"
 #undef DEFINE_OPENCSCAD_GLOBALS
+
+void scadinline(const char *format, ...)
+{
+	char buffer[1024];
+	va_list args;
+
+	va_start(args, format);
+	vsprintf(buffer, format, args);
+	va_end(args);
+
+	fprintf(fss, "%s", buffer);
+}
 
 static void pushfile(FILE *f)
 {
@@ -327,9 +340,11 @@ void end_radial_dist(void)
 	end();
 }
 
+#define MAIN_TMPFILE "main_openscad_tmpfile.txt"
+
 void opencscad_init(void)
 {
-	newfile("main_openscad_tmpfile.txt");
+	newfile(MAIN_TMPFILE);
 }
 
 void finalize(void)
@@ -346,5 +361,6 @@ void finalize(void)
 	}
 	system("cat main_openscad_tmpfile.txt");
 	fflush(stdout);
+	remove(MAIN_TMPFILE);
 }
 

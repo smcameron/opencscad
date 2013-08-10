@@ -63,6 +63,8 @@ OPENCSCAD_GLOBAL void polygon(struct opencscad_2dpoint point[], int npoints,
 OPENCSCAD_GLOBAL void module(char *module_name);
 OPENCSCAD_GLOBAL void end(void);
 OPENCSCAD_GLOBAL void call_module(char *module_name);
+OPENCSCAD_GLOBAL void radial_dist(int count, float r);
+OPENCSCAD_GLOBAL void end_radial_dist(void);
 
 #undef OPENCSCAD_GLOBAL
 #endif

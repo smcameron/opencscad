@@ -261,3 +261,25 @@ void call_module(char *module_name)
 	printf("%s();\n", module_name);
 }
 
+void radial_dist(int count, float r)
+{
+	float da = 360.0 / (float) count;
+
+	ind();
+	printf("for ( i = [ 0 : %d ] ) {\n", count);
+	indent();
+		ind();
+		printf("rotate(a = i * %f, v = [0, 0, 1]) {\n", da);
+		indent();
+			ind();
+			printf("translate(v = [%f, 0, 0]) {\n", r);
+			indent();
+}
+
+void end_radial_dist(void)
+{
+	end();
+	end();
+	end();
+}
+

@@ -167,7 +167,7 @@ static void random_cylinder_rings(float length, float r1, float r2, int nelabora
 	end();
 }
 
-static void elaborate_cylinder(float length, float r1, float r2, int nelaborations)
+static void elaborate_cylinder(float length, float r1, float r2, int nelaborations, int with_spheres)
 {
 	int i;
 
@@ -185,6 +185,14 @@ static void elaborate_cylinder(float length, float r1, float r2, int nelaboratio
 				break;
 			}
 		}
+		if (with_spheres) {
+			xlate(0, 0, -length / 2);
+				sphere(r1);
+			end();
+			xlate(0, 0, length / 2);
+				sphere(r2);
+			end();
+		}
 	end();
 }
 
@@ -194,7 +202,7 @@ static void thruster_module(char *modulename, float length, float r1, float r2)
 
 	module(modulename);
 		diff();
-			elaborate_cylinder(length, r1, r2, nelaborations);
+			elaborate_cylinder(length, r1, r2, nelaborations, 0);
 			xlate(0, 0, length * 0.05);
 				cyl(length, r1 * 0.95, r2 * 0.95, 1);
 			end();

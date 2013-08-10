@@ -258,6 +258,38 @@ static void thruster_cluster(float r)
 		end();
 	end();
 }
+
+static void fuselage_module(char *modulename, float length, float r1, float r2)
+{
+	float squashx, squashy;
+	int nelabs = randn(3) + 2;
+
+	if (randn(100) < 50) {
+		squashx = randf(0.8) + 0.2;
+		squashy = 1.0;
+	} else {
+		squashx = 1.0;
+		squashy = randf(0.8) + 0.2;
+	}
+
+	module(modulename);
+		scale(squashx, squashy, 1.0);
+			onion();
+				elaborate_cylinder(length, r1, r2, nelabs, 1);
+			end();
+		end();
+	end_module();
+}
+
+static void fuselage(float length, float r1, float r2)
+{
+	static int modnum = 0;
+	char mname[100];
+
+	sprintf(mname, "fuselage_m_%d", modnum++);
+	fuselage_module(mname, length, r1, r2);
+	call_module(mname);
+}
 	
 int main(int argc, char *argv[])
 {
@@ -279,7 +311,7 @@ int main(int argc, char *argv[])
 	cylindrical_module("testthing", 10, 5, 3);
 	call_module("testthing");
 #endif
-	thruster_cluster(20);
+	fuselage(50, 10, 7);	
 	finalize();
 	return 0;
 }

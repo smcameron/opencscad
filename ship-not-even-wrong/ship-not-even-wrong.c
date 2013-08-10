@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 #include "opencscad.h"
 
@@ -123,6 +124,19 @@ static void cylinder_protrusions(float length, float r1, float r2, int nprotrusi
 	
 int main(int argc, char *argv[])
 {
+	unsigned int seed;
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+
+	if (argc > 1) {
+		if (sscanf(argv[1], "%u", &seed) != 1) 
+			seed = tv.tv_usec;
+	} else
+		seed = tv.tv_usec;
+
+	srand(seed);
+
 	opencscad_init();
 #if 0
 	cylindrical_module("testthing", 10, 5, 3);

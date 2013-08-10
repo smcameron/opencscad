@@ -14,22 +14,22 @@ test2:	test2.c opencscad.o
 	gcc -o test2 opencscad.o test2.c
 
 test3:	test3.c opencscad.o
-	gcc -o test3 -lm opencscad.o test3.c
+	gcc -o test3 opencscad.o test3.c -lm
 
 test4:	test4.c opencscad.o
-	gcc -g -o test4 -lm opencscad.o test4.c
+	gcc -g -o test4 opencscad.o test4.c -lm
 
 test5:	test5.c opencscad.o
-	gcc -g -o test5 -lm opencscad.o test5.c
+	gcc -g -o test5 opencscad.o test5.c -lm
 
 test6:	test6.c opencscad.o
-	gcc -g -o test6 -lm opencscad.o test6.c
+	gcc -g -o test6 opencscad.o test6.c -lm
 
 pentafort:	pentafort.c opencscad.o
-	gcc -g -o pentafort -lm opencscad.o pentafort.c
+	gcc -g -o pentafort opencscad.o pentafort.c -lm
 
 tree:	tree.c opencscad.o
-	gcc -g -o tree -lm opencscad.o tree.c
+	gcc -g -o tree opencscad.o tree.c -lm
 
 
 clean:

@@ -25,6 +25,11 @@
 #include "opencscad.h"
 #undef DEFINE_OPENCSCAD_GLOBALS
 
+void end(void)
+{
+	printf("}\n");
+}
+
 void fixup(double *x)
 {
 	if (fabsl(*x) < 0.0000001)
@@ -179,5 +184,16 @@ void polygon(struct opencscad_2dpoint point[], int npoints,
 		printf("\n");
 	} 
 	printf("]);\n");
+}
+
+void module(char *module_name)
+{
+	printf("module %s()\n", module_name);
+	printf("{\n");
+}
+
+void call_module(char *module_name)
+{
+	printf("%s();\n", module_name);
 }
 

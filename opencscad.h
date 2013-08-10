@@ -58,7 +58,9 @@ OPENCSCAD_GLOBAL void circle(double r);
  */
 OPENCSCAD_GLOBAL void polygon(struct opencscad_2dpoint point[], int npoints,
 			int *path[]);
-
+OPENCSCAD_GLOBAL void module(char *module_name);
+OPENCSCAD_GLOBAL void end(void);
+OPENCSCAD_GLOBAL void call_module(char *module_name);
 
 #undef OPENCSCAD_GLOBAL
 #endif

@@ -148,7 +148,7 @@ static void random_cylinder_ribs(float length, float r1, float r2, int nelaborat
 	if (randn(100) < 50)
 		offset = -offset;
 	xlate(0, 0, offset);
-		cylinder_ribs(l, ((r1 + r2) / 2.0) * (1 + ribheight), (r1 + r2) / 2.0) * (1 + ribheight), nribs);
+		cylinder_ribs(l, ((r1 + r2) / 2.0) * (1 + ribheight), ((r1 + r2) / 2.0) * (1 + ribheight), nribs);
 	end();
 }
 
@@ -167,6 +167,7 @@ static void random_cylinder_rings(float length, float r1, float r2, int nelabora
 	end();
 }
 
+static void thruster_cluster(float r);
 static void elaborate_cylinder(float length, float r1, float r2, int nelaborations, int with_spheres)
 {
 	int i;
@@ -187,10 +188,32 @@ static void elaborate_cylinder(float length, float r1, float r2, int nelaboratio
 		}
 		if (with_spheres) {
 			xlate(0, 0, -length / 2);
-				sphere(r1);
+				if (randn(100) < 30) {
+					diff(); /* zzz */
+						sphere(r1);
+						xlate(0, 0, -r1 / 2);
+							cyl(r1 * 1.2, r1 * 0.9, r1 * 0.7, 1);
+						end();
+					end();
+				} else if (randn(100) < 30) {
+					rotate(180, 0, 1, 0);
+					thruster_cluster(r1);
+					end();
+				} else {
+					sphere(r1);
+				}
 			end();
 			xlate(0, 0, length / 2);
-				sphere(r2);
+				if (randn(100) < 50) {
+					sphere(r2);
+				} else {
+					diff();
+						sphere(r2);
+						xlate(0, 0, r2 / 2);
+							cyl(r1 * 1.2, r2 * 0.9, r2 * 0.7, 1);
+						end();
+					end();
+				}
 			end();
 		}
 	end();

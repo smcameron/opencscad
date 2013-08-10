@@ -334,7 +334,7 @@ int main(int argc, char *argv[])
 	cylindrical_module("testthing", 10, 5, 3);
 	call_module("testthing");
 #endif
-	fuselage(50, 10, 7);	
+	fuselage(30 + randn(60), randn(10) + 8, randn(10) + 8);	
 	finalize();
 	return 0;
 }

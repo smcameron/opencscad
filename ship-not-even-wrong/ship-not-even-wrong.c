@@ -148,7 +148,7 @@ static void random_cylinder_ribs(float length, float r1, float r2, int nelaborat
 	if (randn(100) < 50)
 		offset = -offset;
 	xlate(0, 0, offset);
-		cylinder_ribs(l, r1 * (1 + ribheight), r2 * (1 + ribheight), nribs);
+		cylinder_ribs(l, ((r1 + r2) / 2.0) * (1 + ribheight), (r1 + r2) / 2.0) * (1 + ribheight), nribs);
 	end();
 }
 

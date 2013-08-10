@@ -121,6 +121,72 @@ static void cylinder_protrusions(float length, float r1, float r2, int nprotrusi
 		end();
 	end();
 }
+
+static void random_cylinder_protrusions(float length, float r1, float r2, int nelaborations)
+{
+	int nprots = randn(5) + 5;
+	float pheight = randf(0.1);
+	float l, offset;
+
+	l = (1.0 - randf(0.7)) * length / nelaborations; 
+	offset = randf((length / 2.0) - (l / 2.0));
+	if (randn(100) < 50)
+		offset = -offset;
+	xlate(0, 0, offset);
+		cylinder_protrusions(l, ((r1 + r2) / 2.0) * (1 + pheight), ((r1 + r2) / 2.0) * (1 + pheight), nprots);
+	end();
+}
+
+static void random_cylinder_ribs(float length, float r1, float r2, int nelaborations)
+{
+	int nribs = randn(5) + 5;
+	float ribheight = randf(0.3);
+	float l, offset;
+
+	l = (1.0 - randf(0.7)) * length / nelaborations; 
+	offset = randf((length / 2.0) - (l / 2.0));
+	if (randn(100) < 50)
+		offset = -offset;
+	xlate(0, 0, offset);
+		cylinder_ribs(l, r1 * (1 + ribheight), r2 * (1 + ribheight), nribs);
+	end();
+}
+
+static void random_cylinder_rings(float length, float r1, float r2, int nelaborations)
+{
+	int nrings = randn(4) + 1;
+	float ringheight = randf(0.05);
+	float l, offset;
+
+	l = (1.0 - randf(0.7)) * length / nelaborations; 
+	offset = randf((length / 2.0) - (l / 2.0));
+	if (randn(100) < 50)
+		offset = -offset;
+	xlate(0, 0, offset);
+		cylinder_rings(l, r1 * (1 + ringheight), r2 * (1 + ringheight), nrings);
+	end();
+}
+
+static void elaborate_cylinder(float length, float r1, float r2, int nelaborations)
+{
+	int i;
+
+	onion();
+		cyl(length, r1, r2, 1);
+		for (i = 0; i < nelaborations; i++) {
+			int e = randn(3);
+
+			switch (e) {
+			case 0: random_cylinder_protrusions(length, r1, r2, nelaborations);
+				break;
+			case 1: random_cylinder_ribs(length, r1, r2, nelaborations);
+				break;
+			case 2: random_cylinder_rings(length, r1, r2, nelaborations);
+				break;
+			}
+		}
+	end();
+}
 	
 int main(int argc, char *argv[])
 {
@@ -142,12 +208,7 @@ int main(int argc, char *argv[])
 	cylindrical_module("testthing", 10, 5, 3);
 	call_module("testthing");
 #endif
-	radial_dist(10, 30.0);
-		cyl(10, 5, 3, 1);
-		cylinder_ribs(10, 5.3, 3.3, 15);
-		cylinder_protrusions(10, 5, 3, 9);
-	end_radial_dist();
-	scadinline("$fn=32;\n");
+	elaborate_cylinder(70, 8, 7, 2);
 	finalize();
 	return 0;
 }

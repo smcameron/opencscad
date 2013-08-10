@@ -8,6 +8,11 @@ static int randn(int n)
 	return (int) ((float) n * (float) rand() / (float) RAND_MAX);
 }
 
+static float randf(float f)
+{
+	return ((float) rand() / (float) RAND_MAX) * f;
+}
+
 static void cylinder_rings(float length, float r1, float r2, int nrings)
 {
 	int i;
@@ -30,6 +35,11 @@ static void cylinder_rings(float length, float r1, float r2, int nrings)
 }
 
 float maxf(float a, float b)
+{
+	return a > b ? a : b;
+}
+
+float minf(float a, float b)
 {
 	return a > b ? a : b;
 }
@@ -86,6 +96,30 @@ static void cylindrical_module(char *modulename, float length, float r1, float r
 		cylindrical_thing(length, r1, r2);
 	end_module();
 }
+
+static void cylinder_protrusions(float length, float r1, float r2, int nprotrusions)
+{
+	int i;
+	float h, z, x;
+	float angle;
+
+	intersection();
+		cyl(length, r1 * 1.1, r2 * 1.1, 1);
+		onion();
+			for (i = 0; i < nprotrusions; i++) {
+				h = ((float) (randn(80) + 20) / 100.0) * length;
+				z = -((length - h) / 2.0) * ((float) randn(100) / 100.0);
+				x = minf(r1, r2) * randf(0.2); 
+				angle = randf(360.0);
+				xlate(0, 0, z);
+					rotate(angle, 0, 0, 1);
+						cube(x, maxf(r1, r2) * 3, h, 1);
+					end();
+				end();
+			}
+		end();
+	end();
+}
 	
 int main(int argc, char *argv[])
 {
@@ -95,8 +129,11 @@ int main(int argc, char *argv[])
 	call_module("testthing");
 #endif
 	radial_dist(10, 30.0);
-		cylinder_ribs(10, 5, 3, 5);
+		cyl(10, 5, 3, 1);
+		cylinder_ribs(10, 5.3, 3.3, 15);
+		cylinder_protrusions(10, 5, 3, 9);
 	end_radial_dist();
+	scadinline("$fn=32;\n");
 	finalize();
 	return 0;
 }

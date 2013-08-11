@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <math.h>
 
 #include "opencscad.h"
 
@@ -358,6 +359,38 @@ static void pod(float length, float r)
 	pod_module(modname, length, r);
 	call_module(modname);
 }
+
+static void outrigger_module(char *modname, float length)
+{
+	static int sparmodnum = 0;
+	static int podmodnum = 0;
+	float angle;
+	char sparmod[30], podmod[30];
+
+	sprintf(sparmod, "outrigger_spar_%d", sparmodnum++);
+	sprintf(podmod, "outrigger_pod_%d", podmodnum++);
+
+	angle = randn(60) + 90;
+
+	spar_module(sparmod, length, angle);
+	pod_module(podmod, length / 3.0, length / 10.0);
+	module(modname);
+		call_module(sparmod);
+		xlate(sin(angle * M_PI / 180.0) * length, 0, cos(angle * M_PI / 180.0) * length);
+			call_module(podmod);
+		end();
+	end_module();
+}
+
+static void outrigger(float length)
+{
+	static int outrignum = 0;
+	char outrig[30];
+
+	sprintf(outrig, "outrig_%d", outrignum++);
+	outrigger_module(outrig, length);
+	call_module(outrig);
+}
 	
 int main(int argc, char *argv[])
 {
@@ -378,10 +411,9 @@ int main(int argc, char *argv[])
 #if 0
 	cylindrical_module("testthing", 10, 5, 3);
 	call_module("testthing");
+	fuselage(30 + randn(60), randn(10) + 8, randn(10) + 8);	
 #endif
-	/* fuselage(30 + randn(60), randn(10) + 8, randn(10) + 8);	
-	spar(70, 90 + randn(30) -randn(30)); */
-	pod(20, 3);
+	outrigger(60);
 	finalize();
 	return 0;
 }

@@ -313,6 +313,32 @@ static void fuselage(float length, float r1, float r2)
 	fuselage_module(mname, length, r1, r2);
 	call_module(mname);
 }
+
+static void spar_module(char *modulename, float length, float angle)
+{
+	float r, squash;
+
+	squash = 0.3 + randf(0.7);	
+	r = length / (10.0 + randf(10.0));
+
+	module(modulename);
+		rotate(angle, 0, 1, 0);
+			scale(1.0, squash, 1.0);
+				cyl(length, r, r * randf(0.4) + 0.4, 0);
+			end();
+		end();
+	end_module();
+}
+
+static void spar(float length, float angle)
+{
+	static int modnum = 0;
+	char modname[30];
+
+	sprintf(modname, "spar_%d", modnum++);
+	spar_module(modname, length, angle);
+	call_module(modname);
+}
 	
 int main(int argc, char *argv[])
 {
@@ -335,6 +361,7 @@ int main(int argc, char *argv[])
 	call_module("testthing");
 #endif
 	fuselage(30 + randn(60), randn(10) + 8, randn(10) + 8);	
+	spar(70, 90 + randn(30) -randn(30));
 	finalize();
 	return 0;
 }

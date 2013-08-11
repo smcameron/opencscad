@@ -386,12 +386,24 @@ static void pod(float length, float r)
 	call_module(modname);
 }
 
+static void ring(float length)
+{
+	float h, r;
+
+	r = length * randf(0.5) + 0.5;
+	h = (r * 0.4) - randf(0.2);
+	diff();
+		cyl(h, r, r, 1);
+		cyl(h + 1, r * 0.95, r * 0.95, 1);
+	end();
+}
+
 static void outrigger_module(char *modname, float length)
 {
 	static int sparmodnum = 0;
 	static int podmodnum = 0;
 	int dualpod;
-	float angle;
+	float angle, dprad;
 	char sparmod[30], podmod[30], podmod2[30];
 
 	sprintf(sparmod, "outrigger_spar_%d", sparmodnum++);
@@ -419,12 +431,20 @@ static void outrigger_module(char *modname, float length)
 		call_module(sparmod);
 		xlate(sin(angle * M_PI / 180.0) * length, 0, cos(angle * M_PI / 180.0) * length);
 			call_module(podmod);
-		if (dualpod) {
-			xlate(sin(angle * M_PI / 180.0) * length / 2.0,
-					0, cos(angle * M_PI / 180.0) * length / 2.0);
-				call_module(podmod2);
-		}
 		end();
+		if (dualpod) {
+			dprad = randf(length * 0.8) + length * 0.1;
+			xlate(sin(angle * M_PI / 180.0) * dprad,
+					0, cos(angle * M_PI / 180.0) * dprad);
+				call_module(podmod2);
+			end();
+		}
+		if (randn(100) < 10) {
+			dprad = randf(length * 0.8) + length * 0.1;
+			xlate(0, 0, cos(angle * M_PI / 180.0) * dprad);
+				ring(length);
+			end();
+		}
 	end_module();
 }
 

@@ -373,7 +373,12 @@ static void outrigger_module(char *modname, float length)
 	angle = randn(60) + 90;
 
 	spar_module(sparmod, length, angle);
-	pod_module(podmod, length / 3.0, length / 10.0);
+
+	if (randn(100) < 50)
+		pod_module(podmod, length / 3.0, length / 10.0);
+	else
+		fuselage_module(podmod, length / 3.0, length / 10.0, length / 12.0);
+
 	module(modname);
 		call_module(sparmod);
 		xlate(sin(angle * M_PI / 180.0) * length, 0, cos(angle * M_PI / 180.0) * length);
@@ -411,8 +416,8 @@ int main(int argc, char *argv[])
 #if 0
 	cylindrical_module("testthing", 10, 5, 3);
 	call_module("testthing");
-	fuselage(30 + randn(60), randn(10) + 8, randn(10) + 8);	
 #endif
+	fuselage(30 + randn(60), randn(10) + 8, randn(10) + 8);	
 	outrigger(60);
 	finalize();
 	return 0;

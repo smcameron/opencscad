@@ -22,7 +22,7 @@
 
 void fivesides(void)
 {
-	printf("$fn = 5;\n");
+	scadinline("$fn = 5;\n");
 }
 
 void pentacolumn(double r, double h)
@@ -51,9 +51,11 @@ void pentacolumn(double r, double h)
 
 int main(int argc, char *argv[])
 {
+	opencscad_init();
 	fivesides();
 	onion();
 	pentacolumn(150, 50);
 	endonion();
+	finalize();
 	return 0;
 }

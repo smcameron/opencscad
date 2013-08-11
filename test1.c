@@ -21,5 +21,7 @@
 
 int main(int argc, char *argv[])
 {
+	opencscad_init();
 	sphere(2.0);
+	finalize();
 }

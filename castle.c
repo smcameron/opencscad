@@ -276,7 +276,7 @@ static void wall(double x1, double y1, double x2, double y2, double thickness, d
 
 	height = perturb(height, 0.1);
 	angle = atan2(y2 - y1, x2 - x1);
-	printf("/* %lf, %lf, angle = %d */\n", (y2 - y1), (x2 - x1), (int) (angle * 180.0 / M_PI));
+	scadinline("/* %lf, %lf, angle = %d */\n", (y2 - y1), (x2 - x1), (int) (angle * 180.0 / M_PI));
 	dist = hypot(x2 - x1, y2 - y1);
 	xlate(x1, y1, 0);
 	rotate(angle * 180 / M_PI, 0, 0, 1);
@@ -652,7 +652,7 @@ static void crenelation_array(double width, double length, double height, double
 
 	spacing = (width - thickness * 2) / (double) n;
 
-	printf("/* n = %d */\n", n);
+	scadinline("/* n = %d */\n", n);
 	x = -(spacing * (n - 1)) / 2.0;
 
 	xlate(0, 0, height / 2.0);
@@ -789,7 +789,7 @@ static void recursive_keep(double x, double y, double width, double length, doub
 		nw2 = (width - nw1); 
 		x1 = x - offset / 2.0 -0.25 * width;
 		x2 = x + 0.25 * width  - offset / 2.0;
-		printf("/* x/y = %lf,%lf, o=%lf nw1 = %lf, nw2 = %lf, x1 = %lf, x2 = %lf */\n",
+		scadinline("/* x/y = %lf,%lf, o=%lf nw1 = %lf, nw2 = %lf, x1 = %lf, x2 = %lf */\n",
 			x, y, offset, nw1, nw2, x1, x2);
 		recursive_keep(x1, y, nw1, length, perturb(height, 0.2), level - 1);
 		recursive_keep(x2, y, nw2, length, perturb(height, 0.2), level - 1);
@@ -801,7 +801,7 @@ static void recursive_keep(double x, double y, double width, double length, doub
 		nl2 = (length - nl1);
 		y1 = y - offset / 2.0 - 0.25 * length;
 		y2 = y + 0.25 * length - offset / 2.0;
-		printf("/* x/y = %lf,%lf, o=%lf nl1 = %lf, nl2 = %lf, y1 = %lf, y2 = %lf */\n",
+		scadinline("/* x/y = %lf,%lf, o=%lf nl1 = %lf, nl2 = %lf, y1 = %lf, y2 = %lf */\n",
 			x, y, offset, nl1, nl2, y1, y2);
 		recursive_keep(x, y1, width, nl1, perturb(height, 0.2), level - 1);
 		recursive_keep(x, y2, width, nl2, perturb(height, 0.2), level - 1);
@@ -899,11 +899,13 @@ static void do_tests(void)
 int main(int argc, char *argv[])
 {
 	initialize_random_seed();
+	opencscad_init();
 #if 1
 	make_castle();
 #else
 	do_tests();
 #endif
+	finalize();
 	return 0;
 }
 

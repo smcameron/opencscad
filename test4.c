@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
 {
 	int x, y;
 
+	opencscad_init();
 	memset(height, 0, sizeof(height));
 	terrain(height, 0, 0, dim - 1, dim - 1);
 
@@ -95,4 +96,5 @@ int main(int argc, char *argv[])
 			endxlate();
 		}
 	}
+	finalize();
 }

@@ -176,6 +176,7 @@ static void renderstring(double x, double y, char **s[])
 
 int main(int argc, char *argv[])
 {
+	opencscad_init();
 	xlate(0, 2.5 * PIXELHEIGHT, 0);
 	renderstring(0, 0, STEVE);
 	endxlate();
@@ -185,5 +186,6 @@ int main(int argc, char *argv[])
 		cube(1, 25.4, 25.4, 0);
 	endxlate();
 #endif
+	finalize();
 	return 0;
 }

@@ -42,7 +42,9 @@ int main(int argc, char *argv[])
 	
 	gettimeofday(&tv, NULL);
 	srand(tv.tv_usec);
+	opencscad_init();
 
 	tree(0, 20.0);
+	finalize();
 }
 

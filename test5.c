@@ -95,5 +95,7 @@ void tower(double r, double h)
 
 int main(int argc, char *argv[])
 {
+	opencscad_init();
 	tower(70.0, 70*5.0);
+	finalize();
 }

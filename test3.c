@@ -47,5 +47,7 @@ void castle(double h, double r)
 
 int main(int argc, char *argv[])
 {
+	opencscad_init();
 	castle(30, 70);
+	finalize();
 }

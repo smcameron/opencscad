@@ -21,8 +21,10 @@
 
 int main(int argc, char *argv[])
 {
+	opencscad_init();
 	diff();
 		cylinder(10, 10, 10);
 		cylinder(10, 8, 8);
 	enddiff();
+	finalize();
 }

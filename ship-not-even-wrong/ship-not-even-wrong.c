@@ -390,11 +390,14 @@ static void outrigger_module(char *modname, float length)
 {
 	static int sparmodnum = 0;
 	static int podmodnum = 0;
+	int dualpod;
 	float angle;
-	char sparmod[30], podmod[30];
+	char sparmod[30], podmod[30], podmod2[30];
 
 	sprintf(sparmod, "outrigger_spar_%d", sparmodnum++);
 	sprintf(podmod, "outrigger_pod_%d", podmodnum++);
+
+	dualpod = (randn(100) < 50);
 
 	angle = randn(60) + 90;
 
@@ -404,11 +407,23 @@ static void outrigger_module(char *modname, float length)
 		pod_module(podmod, length / 3.0, length / 10.0);
 	else
 		fuselage_module(podmod, length / 3.0, length / 10.0, length / 12.0);
+	if (dualpod) {
+		sprintf(podmod2, "outrigger_pod_%d", podmodnum++);
+		if (randn(100) < 50)
+			pod_module(podmod2, length / 3.0, length / 10.0);
+		else
+			fuselage_module(podmod2, length / 3.0, length / 10.0, length / 12.0);
+	}
 
 	module(modname);
 		call_module(sparmod);
 		xlate(sin(angle * M_PI / 180.0) * length, 0, cos(angle * M_PI / 180.0) * length);
 			call_module(podmod);
+		if (dualpod) {
+			xlate(sin(angle * M_PI / 180.0) * length / 2.0,
+					0, cos(angle * M_PI / 180.0) * length / 2.0);
+				call_module(podmod2);
+		}
 		end();
 	end_module();
 }

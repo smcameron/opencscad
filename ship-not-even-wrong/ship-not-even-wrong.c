@@ -168,6 +168,29 @@ static void random_cylinder_rings(float length, float r1, float r2, int nelabora
 	end();
 }
 
+static void pod(float length, float r);
+static void block_pile(float length, float r1, float r2)
+{
+	int i;
+	float w = maxf(r1, r2);
+
+	onion();
+	pod(length * 0.9, w * 0.7);
+	for (i = 0; i < 30; i++) {
+		float x, y, z, sx, sy, sz;
+		x = 0.8 * (randf(w) - (w / 2.0));
+		y = 0.8 * (randf(w) - (w / 2.0));
+		z = 0.8 * (randf(length) - (length / 2.0));
+		sx = randf(w / 2.0) + w / 2.0;
+		sy = randf(w / 2.0) + w / 2.0;
+		sz = randf(w / 2.0) + w / 2.0;
+		xlate(x, y, z);
+			cube(sx, sy, sz, 1);
+		end();
+	}
+	end();
+}
+
 static void thruster_cluster(float r);
 static void elaborate_cylinder(float length, float r1, float r2, int nelaborations, int with_spheres)
 {
@@ -299,7 +322,10 @@ static void fuselage_module(char *modulename, float length, float r1, float r2)
 	module(modulename);
 		scale(squashx, squashy, 1.0);
 			onion();
-				elaborate_cylinder(length, r1, r2, nelabs, 1);
+				if (randn(100) < 50)
+					elaborate_cylinder(length, r1, r2, nelabs, 1);
+				else
+					block_pile(length, r1, r2);
 			end();
 		end();
 	end_module();

@@ -396,11 +396,53 @@ static void outrigger(float length)
 	outrigger_module(outrig, length);
 	call_module(outrig);
 }
+
+static void outrigger_set_module(char *modname, float maxlength, float minlength)
+{
+	static int m = 0;
+	char mn[30];
+	int n;
+	float length = randf(maxlength - minlength) + minlength; 
+	float angle;
+
+	sprintf(mn, "outrig_n_%d", m++);
+	outrigger_module(mn, length);
+
+	if (randn(100) < 20) {
+		n = randn(8) + 1;
+		module(modname);
+			radial_dist(n, 0);
+				call_module(mn);
+			end_radial_dist();
+		end_module();
+	} else {
+		if (randn(100) < 30)
+			angle = randn(4) * 90;
+		else
+			angle = randn(360);
+		module(modname);
+			rotate(angle, 0, 0, 1);
+				call_module(mn);
+			end();
+		end_module();
+	}
+}
+
+static void outrigger_set(float maxlength, float minlength)
+{
+	static int modnum = 0;
+	char modname[30];
+
+	sprintf(modname, "outrig_set_%d", modnum++);
+	outrigger_set_module(modname, maxlength, minlength);
+	call_module(modname);
+}
 	
 int main(int argc, char *argv[])
 {
 	unsigned int seed;
 	struct timeval tv;
+	int i;
 
 	gettimeofday(&tv, NULL);
 
@@ -418,7 +460,8 @@ int main(int argc, char *argv[])
 	call_module("testthing");
 #endif
 	fuselage(30 + randn(60), randn(10) + 8, randn(10) + 8);	
-	outrigger(60);
+	for (i = 0; i < 3; i++)
+		outrigger_set(60, 5);
 	finalize();
 	return 0;
 }

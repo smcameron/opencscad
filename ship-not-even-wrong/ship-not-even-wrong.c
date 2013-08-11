@@ -339,6 +339,25 @@ static void spar(float length, float angle)
 	spar_module(modname, length, angle);
 	call_module(modname);
 }
+
+static void pod_module(char *modulename, float length, float r)
+{
+	module(modulename);
+	scale(r / 10.0, r / 10.0, length / 20.0);
+		sphere(10.0);
+	end();
+	end_module();
+}
+
+static void pod(float length, float r)
+{
+	static int modnum = 0;
+	char modname[30];
+
+	sprintf(modname, "pod_%d", modnum++);
+	pod_module(modname, length, r);
+	call_module(modname);
+}
 	
 int main(int argc, char *argv[])
 {
@@ -360,8 +379,9 @@ int main(int argc, char *argv[])
 	cylindrical_module("testthing", 10, 5, 3);
 	call_module("testthing");
 #endif
-	fuselage(30 + randn(60), randn(10) + 8, randn(10) + 8);	
-	spar(70, 90 + randn(30) -randn(30));
+	/* fuselage(30 + randn(60), randn(10) + 8, randn(10) + 8);	
+	spar(70, 90 + randn(30) -randn(30)); */
+	pod(20, 3);
 	finalize();
 	return 0;
 }

@@ -498,12 +498,23 @@ static void outrigger_set(float maxlength, float minlength)
 	outrigger_set_module(modname, maxlength, minlength);
 	call_module(modname);
 }
-	
+
+void ship_module(char *modulename)
+{
+	int i;
+
+	module(modulename);
+		fuselage(30 + randn(60), randn(10) + 8, randn(10) + 8);	
+		for (i = 0; i < 3; i++)
+			outrigger_set(60, 5);
+	end_module();
+}
+
 int main(int argc, char *argv[])
 {
 	unsigned int seed;
 	struct timeval tv;
-	int i;
+	char *modulename = "myship";
 
 	gettimeofday(&tv, NULL);
 
@@ -520,9 +531,8 @@ int main(int argc, char *argv[])
 	cylindrical_module("testthing", 10, 5, 3);
 	call_module("testthing");
 #endif
-	fuselage(30 + randn(60), randn(10) + 8, randn(10) + 8);	
-	for (i = 0; i < 3; i++)
-		outrigger_set(60, 5);
+	ship_module(modulename);
+	call_module(modulename);
 	finalize();
 	return 0;
 }

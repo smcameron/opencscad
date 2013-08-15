@@ -208,6 +208,16 @@ void xlate(double x, double y, double z)
 	indent();
 }
 
+void mirror(double x, double y, double z)
+{
+	fixup(&x);
+	fixup(&y);
+	fixup(&z);
+	ind();
+	fprintf(fss, "mirror([%g, %g, %g]) {\n", x, y, z);
+	indent();
+}
+
 void endxlate(void)
 {
 	end();

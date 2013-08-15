@@ -50,6 +50,7 @@ OPENCSCAD_GLOBAL void scale(double x, double y, double z);
 OPENCSCAD_GLOBAL void endscale(void);
 OPENCSCAD_GLOBAL void rotate(double angle, double x, double y, double z);
 OPENCSCAD_GLOBAL void endrotate(void);
+OPENCSCAD_GLOBAL void mirror(double x, double y, double z);
 
 /* 2d primitives */
 OPENCSCAD_GLOBAL void square(double x, double y, int center);

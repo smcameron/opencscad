@@ -499,6 +499,33 @@ static void outrigger_set(float maxlength, float minlength)
 	call_module(modname);
 }
 
+void cut_in_half(char *newmodule, char *module_to_cut_in_half, float size)
+{
+	module(newmodule);
+		intersection();
+			xlate(0, -size / 2.0, -size / 2.0);
+				cube(size, size, size, 0);
+			end();
+			call_module(module_to_cut_in_half);
+		end();
+	end_module();
+}
+
+void bilaterally_symmetricalize(char *modulename, float size)
+{
+	char newmodule[100];
+	static int modnum = 0;
+
+	sprintf(newmodule, "%s_%d_halved", modulename, modnum++);
+	cut_in_half(newmodule, modulename, size);
+	onion();
+		call_module(newmodule);
+		mirror(1, 0, 0);
+			call_module(newmodule);
+		end();
+	end();
+}
+	
 void ship_module(char *modulename)
 {
 	int i;
@@ -532,7 +559,10 @@ int main(int argc, char *argv[])
 	call_module("testthing");
 #endif
 	ship_module(modulename);
-	call_module(modulename);
+	if (randn(100) < 20)
+		bilaterally_symmetricalize(modulename, 10000.0);
+	else 
+		call_module(modulename);
 	finalize();
 	return 0;
 }

@@ -1,8 +1,8 @@
 
-all:	test1 test2 test3 test4 test5 test6 pentafort tree
+all:	test1 test2 test3 test4 test5 test6 pentafort tree batwing
 	
 opencscad.o:	opencscad.h opencscad.c
-	gcc -W -Wall -c opencscad.c
+	gcc -g -W -Wall -c opencscad.c
 
 test1:	test1.c opencscad.o
 	gcc -o test1 opencscad.o test1.c
@@ -31,6 +31,8 @@ pentafort:	pentafort.c opencscad.o
 tree:	tree.c opencscad.o
 	gcc -g -o tree opencscad.o tree.c -lm
 
+batwing:	batwing.c opencscad.o
+	gcc -g -o batwing opencscad.o batwing.c -lm
 
 clean:
 	rm -fr opencscad.o test1 test2 test3 test4 test5 test6 pentafort tree

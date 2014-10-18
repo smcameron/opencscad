@@ -77,7 +77,7 @@ static void newfile(char *filename)
 	pushfile(f);
 }
 
-char indentation[1000] = {0};
+static char indentation[1000] = {0};
 
 static void indent(void)
 {

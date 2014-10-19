@@ -69,14 +69,22 @@ void fingers(int nfingers, float length, float deltalength, float angle, float d
 
 static void usage(void)
 {
-	fprintf(stderr, "usage: batwing ...\n");
+	fprintf(stderr, "usage: batwing [options]\n");
+	fprintf(stderr, "options:\n");
+	fprintf(stderr, "-a, --angle          angle between batwing fingers, default is 30 degrees\n");
+	fprintf(stderr, "-c, --curl           Amount of curl in batwing fingers, default is 1.3\n");
+	fprintf(stderr, "-l, --left           0, or 1, whether wing should be right or left handed\n");
+	fprintf(stderr, "-s, --segments       segments in batwing fingers, default is 10\n");
+	fprintf(stderr, "-t, --thickness      thickness of batwing fingers, default is 8.0\n");
+	fprintf(stderr, "-T, --taper          taper of batwing fingers, default is 0.95\n");
+	fprintf(stderr, "-z, --size           size of batwing, default is 800\n");
 	exit(1);
 }
 
 static int parse_int_option(char *o, int *i)
 {
 	int rc;
-
+ 
 	rc = sscanf(o, "%d", i);
 	if (rc != 1)
 		return 1;

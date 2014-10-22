@@ -53,7 +53,6 @@ void fingers(int nfingers, float length, float deltalength, float angle, float d
 	if (!left)
 		rotate(180, 1, 0, 0);
 
-	diff();
 	onion();
 	for (i = 0; i < nfingers; i++) {
 		finger(length + (i == 0) * length * 0.25, angle, segments, thickness, taper, curl, 0);
@@ -62,10 +61,6 @@ void fingers(int nfingers, float length, float deltalength, float angle, float d
 	}
 	finger(armlength, angle, segments, thickness * 1.5, 2.0 - taper, curl, 1);
 	endonion();
-	xlate(-length * 2.5, -length * 2.5, left * length * -5);
-	cube(length * 5, length * 5, length * 5, 0);
-	endxlate();
-	enddiff();
 	if (!left)
 		endrotate();
 }
@@ -79,6 +74,7 @@ static void usage(void)
 	fprintf(stderr, "                     in order to help judge if the model will fit.\n");
 	fprintf(stderr, "-c, --curl           Amount of curl in batwing fingers, default is 1.3\n");
 	fprintf(stderr, "-l, --left           0, or 1, whether wing should be right or left handed\n");
+	fprintf(stderr, "-p, --pair           print a pair of batwings, left and right\n");
 	fprintf(stderr, "-s, --segments       segments in batwing fingers, default is 10\n");
 	fprintf(stderr, "-t, --thickness      thickness of batwing fingers, default is 8.0\n");
 	fprintf(stderr, "-T, --taper          taper of batwing fingers, default is 0.95\n");
@@ -107,7 +103,7 @@ static int parse_float_option(char *o, float *f)
 }
 
 static void process_options(int argc, char *argv[], float *length, int *segments, float *deltaangle,
-		int *left, float *thickness, float *taper, float *curl, int *build_platform)
+		int *left, float *thickness, float *taper, float *curl, int *build_platform, int *pair)
 {
 	int i, c;
 	int digit_optind = 0;
@@ -119,6 +115,7 @@ static void process_options(int argc, char *argv[], float *length, int *segments
 		int option_index = 0;
 		static struct option long_options[] = {
 			{"buildplatform", 0, 0, 'b' },
+			{"pair", 0, 0, 'p' },
 			{"segments",	required_argument, 0, 's' },
 			{"angle",	required_argument, 0,  'a' },
 			{"curl",	required_argument, 0,  'c' },
@@ -129,11 +126,14 @@ static void process_options(int argc, char *argv[], float *length, int *segments
 			{0,         0,                 0,  0 }
 		};
 
-		c = getopt_long(argc, argv, "ba:c:l:s:t:T:z:", long_options, &option_index);
+		c = getopt_long(argc, argv, "a:bc:l:ps:t:T:z:", long_options, &option_index);
 		if (c == -1)
 			break;
 
 		switch (c) {
+		case 'p':
+			*pair = 1;
+			break;
 		case 'b':
 			*build_platform = 1;
 			break;
@@ -203,16 +203,34 @@ int main(int argc, char *argv[])
 	float thickness = 8.0 / 10.0;
 	int left = 0;
 	int build_platform = 0;
+	int pair = 0;
 
-	process_options(argc, argv, &length, &segments, &deltaangle, &left, &thickness, &taper, &curl, &build_platform);
+	process_options(argc, argv, &length, &segments, &deltaangle, &left, &thickness,
+				&taper, &curl, &build_platform, &pair);
 
 	opencscad_init();
 	scadinline("$fn = 16;\n");
 
 	replicator_build_platform(build_platform);
 
+	diff();
+	onion();
 	fingers(4, length, deltalength, angle, deltaangle, left, segments,
 			thickness, taper, curl);
+
+	if (pair) {
+		scadinline("translate(v = [%d, %d, 0]) {\n", 0 * (int) length / 2, (int) length / 5);
+		fprintf(stderr, "blah\n");
+		fingers(4, length, deltalength, angle, deltaangle, !left, segments,
+				thickness, taper, curl);
+		scadinline("}\n");
+	}
+	endonion();
+	xlate(-length * 2.5, -length * 2.5, length * -5);
+	cube(length * 5, length * 5, length * 5, 0);
+	endxlate();
+	enddiff();
+
 	finalize();
 	return 0;
 }

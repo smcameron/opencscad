@@ -72,6 +72,8 @@ static void usage(void)
 	fprintf(stderr, "usage: batwing [options]\n");
 	fprintf(stderr, "options:\n");
 	fprintf(stderr, "-a, --angle          angle between batwing fingers, default is 30 degrees\n");
+	fprintf(stderr, "-b, --buildplatform  include a makerbot replicator2 sized build platform in model\n");
+	fprintf(stderr, "                     in order to help judge if the model will fit.\n");
 	fprintf(stderr, "-c, --curl           Amount of curl in batwing fingers, default is 1.3\n");
 	fprintf(stderr, "-l, --left           0, or 1, whether wing should be right or left handed\n");
 	fprintf(stderr, "-s, --segments       segments in batwing fingers, default is 10\n");
@@ -102,7 +104,7 @@ static int parse_float_option(char *o, float *f)
 }
 
 static void process_options(int argc, char *argv[], float *length, int *segments, float *deltaangle,
-		int *left, float *thickness, float *taper, float *curl)
+		int *left, float *thickness, float *taper, float *curl, int *build_platform)
 {
 	int i, c;
 	int digit_optind = 0;
@@ -113,6 +115,7 @@ static void process_options(int argc, char *argv[], float *length, int *segments
 		int this_option_optind = optind ? optind : 1;
 		int option_index = 0;
 		static struct option long_options[] = {
+			{"buildplatform", 0, 0, 'b' },
 			{"segments",	required_argument, 0, 's' },
 			{"angle",	required_argument, 0,  'a' },
 			{"curl",	required_argument, 0,  'c' },
@@ -123,11 +126,14 @@ static void process_options(int argc, char *argv[], float *length, int *segments
 			{0,         0,                 0,  0 }
 		};
 
-		c = getopt_long(argc, argv, "a:c:l:s:t:T:z:", long_options, &option_index);
+		c = getopt_long(argc, argv, "ba:c:l:s:t:T:z:", long_options, &option_index);
 		if (c == -1)
 			break;
 
 		switch (c) {
+		case 'b':
+			*build_platform = 1;
+			break;
 		case 'a':
 			if (parse_float_option(optarg, &f))
 				usage();
@@ -170,6 +176,20 @@ static void process_options(int argc, char *argv[], float *length, int *segments
 	}
 }
 
+void replicator_build_platform(int build_platform)
+{
+	if (!build_platform)
+		return;
+	scadinline("module replicator2_build_platform()\n");
+	scadinline("{\n");
+	scadinline("	rotate(v = [0, 0, 1], a = 90)\n");
+	scadinline("		translate(v = [0, 0, -5])\n");
+	scadinline("		cube(size = [150, 280, 10], center = true);\n");
+	scadinline("}\n");
+
+	scadinline("replicator2_build_platform();\n");
+}
+
 int main(int argc, char *argv[])
 {
 	int segments = 10;
@@ -181,11 +201,15 @@ int main(int argc, char *argv[])
 	float deltalength = length / 8;
 	float thickness = 8.0 / 10.0;
 	int left = 0;
+	int build_platform = 0;
 
-	process_options(argc, argv, &length, &segments, &deltaangle, &left, &thickness, &taper, &curl);
+	process_options(argc, argv, &length, &segments, &deltaangle, &left, &thickness, &taper, &curl, &build_platform);
 
 	opencscad_init();
 	scadinline("$fn = 16;\n");
+
+	replicator_build_platform(build_platform);
+
 	fingers(4, length, deltalength, angle, deltaangle, left, segments,
 			thickness, taper, curl);
 	finalize();

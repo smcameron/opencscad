@@ -5,7 +5,7 @@
 
 #include "opencscad.h"
 
-void finger(float length, float angle, int segments, float thickness, float taper, float curl)
+void finger(float length, float angle, int segments, float thickness, float taper, float curl, int kink)
 {
 	float len = length / (float) segments;
 	float a = angle;
@@ -34,7 +34,10 @@ void finger(float length, float angle, int segments, float thickness, float tape
 		endxlate();
 		x = x + cos(a * M_PI / 180.0) * len;
 		y = y + sin(a * M_PI / 180.0) * len;
-		a = a + curve;
+		if (kink && i == segments / 2)
+			a = a + curve * 10;
+		else
+			a = a + curve;
 		curve = curve * curl;
 		diam = diam * taper;
 	}
@@ -53,11 +56,11 @@ void fingers(int nfingers, float length, float deltalength, float angle, float d
 	diff();
 	onion();
 	for (i = 0; i < nfingers; i++) {
-		finger(length, angle, segments, thickness, taper, curl);
+		finger(length + (i == 0) * length * 0.25, angle, segments, thickness, taper, curl, 0);
 		angle += deltaangle;
 		length -= deltalength;
 	}
-	finger(armlength, angle, segments, thickness * 1.5, 2.0 - taper, curl);
+	finger(armlength, angle, segments, thickness * 1.5, 2.0 - taper, curl, 1);
 	endonion();
 	xlate(-length * 2.5, -length * 2.5, left * length * -5);
 	cube(length * 5, length * 5, length * 5, 0);

@@ -177,9 +177,9 @@ int main(int argc, char *argv[])
 	float angle = 0;
 	float curl = 1.3;
 	float taper = 0.95;
-	float length = 800;
+	float length = 80.0;
 	float deltalength = length / 8;
-	float thickness = 8.0;
+	float thickness = 8.0 / 10.0;
 	int left = 0;
 
 	process_options(argc, argv, &length, &segments, &deltaangle, &left, &thickness, &taper, &curl);

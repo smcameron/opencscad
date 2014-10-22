@@ -148,8 +148,6 @@ static void process_options(int argc, char *argv[], float *length, int *segments
 			*segments = i;
 			break;
 		case 'l':
-			if (parse_int_option(optarg, &i))
-				usage();
 			*left = i;
 			break;
 		case 'T':
